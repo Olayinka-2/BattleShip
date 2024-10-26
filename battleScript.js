@@ -45,9 +45,6 @@ class GameBoard {
          return coordinates.toUpperCase().charCodeAt(0) - 65;
    }
 
-   place() {
-      console.log('man');
-   }
    placeShip(coordinates, orientation, shipType) {
       let ship =this.#getShipType(shipType);
       console.log(ship)
