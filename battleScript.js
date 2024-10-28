@@ -52,14 +52,26 @@ class GameBoard {
       let rowCoordinate = Number(this.#rowToIndex(coordinates));
       let columnCoordinate = Number(coordinates.charAt(1));
 
-      for(let element of this.board) {
-         for(let innerElement of element) {
-            if(innerElement !== null) {
-               console.log('Occupied already');
-               return;
-            }
+      let targetArray = this.board[rowCoordinate];
+
+      for(let i = columnCoordinate; i <= ship.length; i++) {
+         console.log(targetArray[0]);
+         console.log(i);
+         console.log(targetArray[i]);
+         if(targetArray[i] !== null) {
+            console.log('Space occupied already');
+            return;
          }
       }
+
+      // for(let element of this.board[rowCoordinate]) {
+      //    for(let i = columnCoordinate; i < ship.length; i++) {
+      //       if(element[i] !== null) {
+      //          console.log('Occupied already');
+      //          return;
+      //       }
+      //    }
+      // }
 
       if(ship !== null && rowCoordinate + ship.length < 10 && columnCoordinate + ship.length < 10) {
          for(let i = 0; i < ship.length; i++) {
@@ -95,12 +107,10 @@ class GameBoard {
       console.log(boardString);  // Print the board to the console
    }
 }
-
+ 
 
 let game = new GameBoard();
-game.board[1][1] = 'BA'
-game.placeShip('A1', 'vertical', 'Destroyer');
-game.board[0][0] = 'CA'
+game.placeShip('C1', 'vertical', 'Destroyer');
 
 game.printGameBoard();
 
