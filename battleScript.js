@@ -52,6 +52,15 @@ class GameBoard {
       let rowCoordinate = Number(this.#rowToIndex(coordinates));
       let columnCoordinate = Number(coordinates.charAt(1));
 
+      for(let element of this.board) {
+         for(let innerElement of element) {
+            if(innerElement !== null) {
+               console.log('Occupied already');
+               return;
+            }
+         }
+      }
+
       if(ship !== null && rowCoordinate + ship.length < 10 && columnCoordinate + ship.length < 10) {
          for(let i = 0; i < ship.length; i++) {
             if(orientation == 'horizontal') {
@@ -89,7 +98,10 @@ class GameBoard {
 
 
 let game = new GameBoard();
-game.placeShip('A0', 'horizontal', 'Carrier');
-console.log(game.printGameBoard());
+game.board[1][1] = 'BA'
+game.placeShip('A1', 'vertical', 'Destroyer');
+game.board[0][0] = 'CA'
+
+game.printGameBoard();
 
 module.exports = game;
