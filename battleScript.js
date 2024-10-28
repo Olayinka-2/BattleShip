@@ -1,3 +1,11 @@
+class Player {
+   constructor(name) {
+      this.name = name;
+      this.board = new GameBoard(); // Pass 'this' to the GameBoard constructor
+   }
+ }
+
+
 class Ship {
    constructor(length, shipType) {
       this.name = shipType;
@@ -14,13 +22,15 @@ class Ship {
       if(this.length === this.timesHit) {
          this.sunk = true;
       }
-      return;
+      return false;
    }
 }
 
 class GameBoard {
-   constructor() {
+   constructor(player) {
       this.board = Array.from({ length: 10 }, () => Array(10).fill(null));
+      this.ships = [];
+      this.missedAttacks = [];
    }
 
    #getShipType(shipType) {
@@ -47,7 +57,7 @@ class GameBoard {
 
    placeShip(coordinates, orientation, shipType) {
       let ship =this.#getShipType(shipType);
-      console.log(ship)
+      this.ships.push(ship);
 
       let rowCoordinate = Number(this.#rowToIndex(coordinates));
       let columnCoordinate = Number(coordinates.charAt(1));
@@ -55,23 +65,11 @@ class GameBoard {
       let targetArray = this.board[rowCoordinate];
 
       for(let i = columnCoordinate; i <= ship.length; i++) {
-         console.log(targetArray[0]);
-         console.log(i);
-         console.log(targetArray[i]);
          if(targetArray[i] !== null) {
             console.log('Space occupied already');
             return;
          }
       }
-
-      // for(let element of this.board[rowCoordinate]) {
-      //    for(let i = columnCoordinate; i < ship.length; i++) {
-      //       if(element[i] !== null) {
-      //          console.log('Occupied already');
-      //          return;
-      //       }
-      //    }
-      // }
 
       if(ship !== null && rowCoordinate + ship.length < 10 && columnCoordinate + ship.length < 10) {
          for(let i = 0; i < ship.length; i++) {
@@ -81,6 +79,26 @@ class GameBoard {
                this.board[rowCoordinate + i][columnCoordinate] = ship.name.slice(0, 2);
             }
          }
+      }
+   }
+
+   receiveAttack(coordinates) {
+      let rowCoordinate = Number(this.#rowToIndex(coordinates));
+      let columnCoordinate = Number(coordinates.charAt(1));
+      let targetBox = this.board[rowCoordinate][columnCoordinate];
+
+      let targetShip = this.ships.find(ship => ship.name.slice(0,2) == targetBox);
+
+      if(targetShip) {
+         targetShip.hit();
+         console.log('hit');
+         if(targetShip.isSunk()) {
+            console.log(`${targetShip.name} is sunk!`);
+         }
+      } else {
+         targetBox = 'X';
+         console.log('Target missed');
+         return;
       }
    }
 
@@ -107,10 +125,11 @@ class GameBoard {
       console.log(boardString);  // Print the board to the console
    }
 }
- 
 
 let game = new GameBoard();
+let player1 = new Player();
 game.placeShip('C1', 'vertical', 'Destroyer');
+game.receiveAttack('E1');
 
 game.printGameBoard();
 
