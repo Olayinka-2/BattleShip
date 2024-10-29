@@ -1,9 +1,9 @@
 class Player {
-   constructor(name) {
+   constructor(name, autoCreateFleet) {
       this.name = name;
-      this.board = new GameBoard(); // Pass 'this' to the GameBoard constructor
+      this.board = new GameBoard(autoCreateFleet); // Pass 'this' to the GameBoard constructor
    }
- }
+}
 
 
 class Ship {
@@ -22,15 +22,37 @@ class Ship {
       if(this.length === this.timesHit) {
          this.sunk = true;
       }
-      return false;
+      return this.sunk;
    }
 }
 
 class GameBoard {
-   constructor(player) {
+   constructor(autoCreateFleet = false) {
       this.board = Array.from({ length: 10 }, () => Array(10).fill(null));
       this.ships = [];
-      this.missedAttacks = [];
+
+      if (autoCreateFleet) this.createFleet();
+   }
+
+   createFleet() {
+      const fleet = [
+         { type: 'Carrier', length: 5 },
+         { type: 'BattleShip', length: 4 },
+         { type: 'Cruiser', length: 3 },
+         { type: 'Submarine', length: 3 },
+         { type: 'Destroyer', length: 2 }
+      ];
+
+      for (let ship of fleet) {
+         let placed = false;
+         while (!placed) {
+            const row = Math.floor(Math.random() * 10);
+            const col = Math.floor(Math.random() * 10);
+            const orientation = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+            placed = this.placeShip(`${String.fromCharCode(65 + row)}${col}`, orientation, ship.type);
+            
+         }
+      }
    }
 
    #getShipType(shipType) {
@@ -51,23 +73,32 @@ class GameBoard {
       }
    }
 
-   #rowToIndex(coordinates) {
-         return coordinates.toUpperCase().charCodeAt(0) - 65;
+   // #rowToIndex(coordinates) {
+   //       return coordinates.toUpperCase().charCodeAt(0) - 65;
+   // }
+
+   #parseCoordinates(coordinates) {
+      return {
+         row: coordinates.toUpperCase().charCodeAt(0) - 65,
+         col: parseInt(coordinates.charAt(1), 10)
+      };
    }
 
    placeShip(coordinates, orientation, shipType) {
       let ship =this.#getShipType(shipType);
       this.ships.push(ship);
 
-      let rowCoordinate = Number(this.#rowToIndex(coordinates));
-      let columnCoordinate = Number(coordinates.charAt(1));
+      let {rowCoordinate, columnCoordinate} = this.#parseCoordinates(coordinates);
+
+      // let rowCoordinate = Number(this.#rowToIndex(coordinates));
+      // let columnCoordinate = Number(coordinates.charAt(1));
 
       let targetArray = this.board[rowCoordinate];
 
       for(let i = columnCoordinate; i <= ship.length; i++) {
          if(targetArray[i] !== null) {
             console.log('Space occupied already');
-            return;
+            return false;
          }
       }
 
@@ -78,13 +109,17 @@ class GameBoard {
             } else if(orientation == 'vertical') {
                this.board[rowCoordinate + i][columnCoordinate] = ship.name.slice(0, 2);
             }
-         }
+         }  
+         return true;
       }
+      return false;
    }
 
    receiveAttack(coordinates) {
-      let rowCoordinate = Number(this.#rowToIndex(coordinates));
-      let columnCoordinate = Number(coordinates.charAt(1));
+      // let rowCoordinate = Number(this.#rowToIndex(coordinates));
+      // let columnCoordinate = Number(coordinates.charAt(1));
+
+      let {rowCoordinate, columnCoordinate} = this.#parseCoordinates(coordinates);
       let targetBox = this.board[rowCoordinate][columnCoordinate];
 
       let targetShip = this.ships.find(ship => ship.name.slice(0,2) == targetBox);
@@ -96,7 +131,7 @@ class GameBoard {
             console.log(`${targetShip.name} is sunk!`);
          }
       } else {
-         targetBox = 'X';
+         this.board[rowCoordinate][columnCoordinate] = 'X';
          console.log('Target missed');
          return;
       }
@@ -126,11 +161,14 @@ class GameBoard {
    }
 }
 
-let game = new GameBoard();
-let player1 = new Player();
-game.placeShip('C1', 'vertical', 'Destroyer');
-game.receiveAttack('E1');
+// let game = new GameBoard();
+let player1 = new Player('computer', true);
+// player1.board;
+player1.board.printGameBoard();
+// game.placeShip('C1', 'vertical', 'Destroyer');
+// game.placeShip('G4', 'horizontal', 'Submarine');
+// game.receiveAttack('E1');
 
-game.printGameBoard();
+// game.printGameBoard();
 
-module.exports = game;
+// module.exports = game;
