@@ -1,0 +1,50 @@
+* {
+   padding: 0;
+   margin: 0;
+   box-sizing: border-box;
+}
+
+html {
+   font-size: 62.5%;
+}
+
+header {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background: rgb(207, 205, 205);
+}
+
+header div {
+   font-size: 2.4rem;
+   padding: 1rem 0;
+}
+
+.content-container {
+   padding: 2rem;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+table {
+   border-collapse: collapse;
+}
+
+td {
+   padding: 2rem;
+   text-align: center;
+   border: 1px solid black;
+}
+
+
+th[scope="row"] {
+   font-weight: bold;
+   border: none; /* Remove border from row headers */
+}
+
+thead td {
+   font-size: 1.4rem;
+   font-weight: bold;
+   border: none; 
+}
