@@ -1,7 +1,7 @@
 class Player {
    constructor(name, autoCreateFleet) {
       this.name = name;
-      this.board = new GameBoard(autoCreateFleet); // Pass 'this' to the GameBoard constructor
+      this.board = new GameBoard(autoCreateFleet); 
    }
 }
 
@@ -30,6 +30,7 @@ class GameBoard {
    constructor(autoCreateFleet = false) {
       this.board = Array.from({ length: 10 }, () => Array(10).fill(null));
       this.ships = [];
+      this.fleetItems = [];
 
       if (autoCreateFleet) this.createFleet();
    }
@@ -43,6 +44,7 @@ class GameBoard {
          { type: 'Destroyer', length: 2 }
       ];
 
+
       for (let ship of fleet) {
          let placed = false;
          while (!placed) {
@@ -50,9 +52,13 @@ class GameBoard {
             const col = Math.floor(Math.random() * 10);
             const orientation = Math.random() < 0.5 ? 'horizontal' : 'vertical';
             placed = this.placeShip(`${String.fromCharCode(65 + row)}${col}`, orientation, ship.type);
+            if(placed) {
+               this.fleetItems.push({row, col, orientation});
+            }
             
          }
       }
+      return this.fleetItems;
    }
 
    #getShipType(shipType) {
@@ -174,13 +180,15 @@ class GameBoard {
 }
 
 // let game = new GameBoard();
-let player1 = new Player('computer', true);
+// let player1 = new Player('computer', true);
 // player1.board;
-player1.board.printGameBoard();
+// player1.board.printGameBoard();
 // game.placeShip('C1', 'vertical', 'Destroyer');
 // game.placeShip('G4', 'horizontal', 'Submarine');
-player1.board.receiveAttack('E4');
+// player1.board.receiveAttack('E4');
 
 // game.printGameBoard();
 
-module.exports = {Player, GameBoard};
+// module.exports = {Player, GameBoard};
+
+export {Player, GameBoard};
