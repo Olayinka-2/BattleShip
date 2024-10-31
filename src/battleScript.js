@@ -51,9 +51,10 @@ class GameBoard {
             const row = Math.floor(Math.random() * 10);
             const col = Math.floor(Math.random() * 10);
             const orientation = Math.random() < 0.5 ? 'horizontal' : 'vertical';
-            placed = this.placeShip(`${String.fromCharCode(65 + row)}${col}`, orientation, ship.type);
+            const alphabeticRow = String.fromCharCode(65 + row);
+            placed = this.placeShip(`${alphabeticRow}${col}`, orientation, ship.type);
             if(placed) {
-               this.fleetItems.push({row, col, orientation});
+               this.fleetItems.push({"coord":`${alphabeticRow}${col}`, orientation, ship});
             }
             
          }
@@ -179,16 +180,8 @@ class GameBoard {
    }
 }
 
-// let game = new GameBoard();
+
 // let player1 = new Player('computer', true);
-// player1.board;
-// player1.board.printGameBoard();
-// game.placeShip('C1', 'vertical', 'Destroyer');
-// game.placeShip('G4', 'horizontal', 'Submarine');
-// player1.board.receiveAttack('E4');
-
-// game.printGameBoard();
-
-// module.exports = {Player, GameBoard};
+// console.log(player1.board.printGameBoard());
 
 export {Player, GameBoard};
