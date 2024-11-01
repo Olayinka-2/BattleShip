@@ -12,26 +12,32 @@ const shipColors = {
   Destroyer: 'Orange'
 };
 
-// Function to color a ship on the board
 function colorShip(ship) {
-   const startCoord = ship.coord;
-   const shipLength = ship.ship.length;
+  const startRow = ship.coord.charCodeAt(0) - 65;
+  const startCol = parseInt(ship.coord.substring(1)) - 1;
+  const shipLength = ship.ship.length;
 
-  // Handle both vertical and horizontal orientations
-  const direction = ship.orientation === 'vertical' ? 'y' : 'x';
- // Adjust the offset to 1 for simplicity
-const offset = 1;
+  // ... (rest of the function remains the same)
 
-for (let i = 0; i < shipLength; i++) {
-  const currentCoord = generateCoordinate(startCoord, i, direction, offset);
-  const cell = document.getElementById(currentCoord);
+  for (let i = 0; i < shipLength; i++) {
+    let row, col;
+    if (ship.orientation === 'vertical') {
+      row = startRow + i;
+      col = startCol;
+    } else {
+      row = startRow;
+      col = startCol + i;
+    }
 
-  if (cell) {
-    cell.style.backgroundColor = shipColors[ship.ship.type];
-  } else {
-    console.warn(`Invalid ship coordinate: ${currentCoord}`);
+    const cellId = String.fromCharCode(row + 65) + (col + 1);
+    const cell = document.getElementById(cellId);
+
+    // ... (rest of the function remains the same)
+
+    if (cell) {
+      cell.style.backgroundColor = shipColors[ship.ship.type];
+    } 
   }
-}
 }
 
 // Function to generate a new coordinate based on direction and offset
@@ -50,6 +56,6 @@ function generateCoordinate(coord, index, direction, offset) {
 // Loop through ships and color them
 player1.board.fleetItems.forEach(colorShip);
 
-// player1.board.printGameBoard(); // Optional: uncomment to print board to console
+player1.board.printGameBoard(); // Optional: uncomment to print board to console
 // player1.board.receiveAttack('E4'); // Optional: uncomment for gameplay logic
 // console.log(player1.board.fleetItems); // Optional: already logged

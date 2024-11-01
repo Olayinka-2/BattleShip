@@ -48,8 +48,8 @@ class GameBoard {
       for (let ship of fleet) {
          let placed = false;
          while (!placed) {
-            const row = Math.floor(Math.random() * 10);
-            const col = Math.floor(Math.random() * 10);
+            const row = Math.floor(Math.random() * 10) + 1;
+            const col = Math.floor(Math.random() * 10) + 1;
             const orientation = Math.random() < 0.5 ? 'horizontal' : 'vertical';
             const alphabeticRow = String.fromCharCode(65 + row);
             placed = this.placeShip(`${alphabeticRow}${col}`, orientation, ship.type);
@@ -83,7 +83,7 @@ class GameBoard {
    #parseCoordinates(coordinates) {
       return {
          row: coordinates.toUpperCase().charCodeAt(0) - 65,
-         col: parseInt(coordinates.charAt(1), 10)
+         col: parseInt(coordinates.substring(1), 10) - 1,
       };
    }
 
@@ -107,16 +107,19 @@ class GameBoard {
          return false;
       }
 
-      let targetArray = this.board[row];
+      // let targetArray = this.board[row];
 
-      for(let i = col; i <= ship.length; i++) {
-         if(targetArray[i] !== null) {
+      for(let i = 0; i < ship.length; i++) {
+         let targetRow = orientation === 'horizontal' ? row : row + i;
+         let targetCol = orientation === 'horizontal' ? col + i : col;
+         if(this.board[targetRow] && this.board[targetRow][targetCol] !== null) {
             console.log('Space occupied already');
             return false;
          }
       }
+   
 
-      if(ship !== null && row + ship.length < 10 && col + ship.length < 10) {
+      if(ship !== null && row + ship.length <= 10 && col + ship.length <= 10) {
          for(let i = 0; i < ship.length; i++) {
             if(orientation == 'horizontal') {
                this.board[row][col + i] = ship.name.slice(0, 2);
@@ -159,7 +162,7 @@ class GameBoard {
     // Pretty print function
    printGameBoard() {
       const rows = 'ABCDEFGHIJ';  // Rows labeled A-J
-      const columns = Array.from({ length: 10 }, (_, i) => i); // Columns labeled 0-9
+      const columns = Array.from({ length: 10 }, (_, i) => i + 1); // Columns labeled 0-9
 
       // Create header row
       let boardString = '   ' + columns.map(col => col.toString().padStart(2, ' ')).join(' ') + '\n';
@@ -181,7 +184,7 @@ class GameBoard {
 }
 
 
-// let player1 = new Player('computer', true);
-// console.log(player1.board.printGameBoard());
+let player1 = new Player('computer', true);
+console.log(player1.board.board);
 
 export {Player, GameBoard};
