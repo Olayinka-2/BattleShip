@@ -12,7 +12,7 @@ const shipColors = {
   Destroyer: 'Orange'
 };
 
-function colorShip(ship) {
+function colorShip(ship, playerPrefix) {
   const startRow = ship.coord.charCodeAt(0) - 65;
   const startCol = parseInt(ship.coord.substring(1)) - 1;
   const shipLength = ship.ship.length;
@@ -29,7 +29,7 @@ function colorShip(ship) {
       col = startCol + i;
     }
 
-    const cellId = String.fromCharCode(row + 65) + (col + 1);
+    const cellId = `${playerPrefix}-${String.fromCharCode(row + 65) + (col + 1)}`;
     const cell = document.getElementById(cellId);
 
     // ... (rest of the function remains the same)
@@ -54,8 +54,9 @@ function generateCoordinate(coord, index, direction, offset) {
 
 
 // Loop through ships and color them
-player1.board.fleetItems.forEach(colorShip);
+player1.board.fleetItems.forEach(ship => colorShip(ship, "P1"));
 
-player1.board.printGameBoard(); // Optional: uncomment to print board to console
-// player1.board.receiveAttack('E4'); // Optional: uncomment for gameplay logic
-// console.log(player1.board.fleetItems); // Optional: already logged
+player1.board.printGameBoard();
+const player2 = new Player("huurman", true);
+
+player2.board.fleetItems.forEach(ship => colorShip(ship, "P2"));
