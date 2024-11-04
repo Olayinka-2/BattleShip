@@ -2,6 +2,7 @@ import { Player, GameBoard } from "./battleScript";
 import './style.css';
 
 let player1 = new Player('computer', true);
+const player2 = new Player("huurman", true);
 
 const tdElements = document.querySelectorAll('td');
 const shipColors = {
@@ -54,27 +55,34 @@ function colorShip(ship, playerPrefix) {
 //   }
 // }
 
-let player1Cells = document.querySelectorAll('td[id^="P1-"]');
+function attachAttackListeners(player, playerPrefix) {
+  const playerCells = document.querySelectorAll(`td[id^="${playerPrefix}"]`);
+  
+  playerCells.forEach(cell => {
+    cell.addEventListener('click', () => {
+      let cellId = cell.id.replace(`${playerPrefix}`, "");
+      player.board.receiveAttack(cellId);
 
-player1Cells.forEach(cell => {
-  cell.addEventListener('click', () => {
-    let cellId = cell.id.replace('P1-', "");
-    player1.board.receiveAttack(cellId);
-      if (player1.board.board[cellId[0].charCodeAt(0) - 65][parseInt(cellId.slice(1)) - 1] === 'X') {
-        cell.innerText = 'X';  // Mark as miss
-        cell.style.color = 'red';
-    } else {
-        cell.innerText = 'H';  // Mark as hit
-        cell.style.color = 'green';
-    }
-  })
-})
+      // Determine if it's a hit or a miss and style accordingly
+      const row = cellId[0].charCodeAt(0) - 65;
+      const col = parseInt(cellId.slice(1)) - 1;
+      const isHit = player.board.board[row][col] === 'H';
+      
+      cell.innerText = isHit ? 'H' : 'X';
+      cell.style.color = isHit ? 'green' : 'red';
+    });
+  });
+}
+
+// Attach event listeners for each player
+attachAttackListeners(player1, "P1-");
+attachAttackListeners(player2, "P2-");
 
 
 // Loop through ships and color them
 player1.board.fleetItems.forEach(ship => colorShip(ship, "P1"));
 
 // player1.board.printGameBoard();
-const player2 = new Player("huurman", true);
+
 
 player2.board.fleetItems.forEach(ship => colorShip(ship, "P2"));
