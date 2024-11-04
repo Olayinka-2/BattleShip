@@ -1,7 +1,7 @@
 import { Player, GameBoard } from "./battleScript";
 import './style.css';
 
-let player1 = new Player('computer', true);
+const player1 = new Player('computer', true);
 const player2 = new Player("huurman", true);
 
 const tdElements = document.querySelectorAll('td');
@@ -41,20 +41,6 @@ function colorShip(ship, playerPrefix) {
   }
 }
 
-
-
-// Function to generate a new coordinate based on direction and offset
-// function generateCoordinate(coord, index, direction, offset) {
-//   const charCode = coord.charCodeAt(0); // Get char code for the letter
-//   const number = parseInt(coord.substring(1)); // Extract the number
-
-//   if (direction === 'y') {
-//     return `${String.fromCharCode(charCode)}${number + index}`;
-//   } else {
-//     return `${String.fromCharCode(charCode + index)}${number}`;
-//   }
-// }
-
 function attachAttackListeners(player, playerPrefix) {
   const playerCells = document.querySelectorAll(`td[id^="${playerPrefix}"]`);
   
@@ -85,4 +71,4 @@ player1.board.fleetItems.forEach(ship => colorShip(ship, "P1"));
 // player1.board.printGameBoard();
 
 
-player2.board.fleetItems.forEach(ship => colorShip(ship, "P2"));
+// player2.board.fleetItems.forEach(ship => colorShip(ship, "P2"));
