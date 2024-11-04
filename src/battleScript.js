@@ -87,12 +87,6 @@ class GameBoard {
       };
    }
 
-   // placeFleet(fleet) {
-   //    for (const { coordinates, orientation, type } of fleet) {
-   //       this.placeShip(coordinates, orientation, type);
-   //    }
-   // }
-
    placeShip(coordinates, orientation, shipType) {
       let ship =this.#getShipType(shipType);
       if(!ship) return false;
@@ -143,19 +137,24 @@ class GameBoard {
 
       let targetShip = this.ships.find(ship => ship.name.slice(0,2) == targetBox);
 
-      if(targetShip) {
-         targetShip.hit();
-         console.log('hit');
-         if(targetShip.isSunk()) {
-            console.log(`${targetShip.name} is sunk!`);
+      if(targetBox !== 'H' && targetBox !== 'X') {
+            if(targetShip) {
+               targetShip.hit();
+               console.log('hit');
+               this.board[row][col] = 'H';
+            if(targetShip.isSunk()) {
+               console.log(`${targetShip.name} is sunk!`);
+            }
+            if(this.isAllSunk()) {
+               console.log("All the ship is sunk");
+               return 'All sunk';
+            }
+            } else {
+            this.board[row][col] = 'X';
+            console.log('Target missed');
+            console.log(this.board[row][col]);
+            return;
          }
-         if(this.isAllSunk()) {
-            console.log("All the ship is sunk");
-         }
-      } else {
-         this.board[row][col] = 'X';
-         console.log('Target missed');
-         return;
       }
    }
 
@@ -184,7 +183,9 @@ class GameBoard {
 }
 
 
-let player1 = new Player('computer', true);
-console.log(player1.board.board);
+// let player1 = new Player('computer', true);
+// console.log(player1.board.board);
+// player1.board.receiveAttack('A2');
+// player1.board.printGameBoard();
 
 export {Player, GameBoard};
