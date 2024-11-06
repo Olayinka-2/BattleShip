@@ -16,6 +16,7 @@ class Ship {
 
    hit() {
       this.timesHit++;
+      console.log(`${this.name} hit count: ${this.timesHit}/${this.length}`);
    }
 
    isSunk() {
@@ -55,6 +56,7 @@ class GameBoard {
             placed = this.placeShip(`${alphabeticRow}${col}`, orientation, ship.type);
             if(placed) {
                this.fleetItems.push({"coord":`${alphabeticRow}${col}`, orientation, ship});
+               this.ships.push(this.#getShipType(ship.type));
             }
             
          }
@@ -90,7 +92,6 @@ class GameBoard {
    placeShip(coordinates, orientation, shipType) {
       let ship =this.#getShipType(shipType);
       if(!ship) return false;
-      this.ships.push(ship);
 
       let {row, col} = this.#parseCoordinates(coordinates);
 
@@ -127,22 +128,30 @@ class GameBoard {
    }
 
    isAllSunk() {
-      return this.ships.every(ship => ship.isSunk());
+      const allSunk = this.ships.every(ship => ship.isSunk());
+      console.log("All ships sunk:", allSunk);
+      return allSunk;
    }
+   
 
    receiveAttack(coordinates) {
 
       let {row, col} = this.#parseCoordinates(coordinates);
-      let targetBox = this.board[row][col];
-
-      let targetShip = this.ships.find(ship => ship.name.slice(0,2) == targetBox);
+      let targetBox = this.board[row][col] ;
 
       if (targetBox === 'H' || targetBox === 'X') {
          console.log("Already attacked this cell.");
          return;
-   }
+      }
 
-      if(targetBox !== 'H' && targetBox !== 'X') {
+      if (targetBox === null) {
+         this.board[row][col] = 'X';
+         console.log("Miss! No ship at this location.");
+         return;
+      }
+
+      let targetShip = this.ships.find(ship => ship.name.slice(0,2) == targetBox);
+
          if(targetShip) {
             targetShip.hit();
             console.log('hit');
@@ -151,12 +160,9 @@ class GameBoard {
                console.log(`${targetShip.name} is sunk!`);
             }
          } else {
-            this.board[row][col] = 'X';
-            console.log('Target missed');
-            console.log(this.board[row][col]);
+            console.error("Error: Could not find a ship for this attack.");
             return;
          }
-      }
    }
 
     // Pretty print function

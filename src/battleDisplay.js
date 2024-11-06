@@ -3,6 +3,7 @@ import './style.css';
 
 const player1 = new Player('Player 1', true);
 const computer = new Player('Computer', true);
+let gameOver = false;
 
 const tdElements = document.querySelectorAll('td');
 const shipColors = {
@@ -92,6 +93,11 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
 
   playerCells.forEach(cell => {
     cell.addEventListener('click', () => {
+      if (gameOver) {
+        console.log("Game over. No further moves allowed.");
+        return;  // Exit if game is already over
+      }
+
       let cellId = cell.id.replace(`${computerPrefix}`, "");
 
       if (cell.innerText === "H" || cell.innerText === "X") {
@@ -101,17 +107,11 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
 
       playerAttack(computerPlayer, cellId);
 
-      // Check for game over after player's attack
-      // if (computerPlayer.board.isAllSunk()) {
-      //   console.log("You Win!");
-      //   return;  // End the game loop
-      // }
-
       if (isGameOver(computerPlayer)) {
         alert('all');
         console.log(`you lose!`);
-        const allCells = document.querySelectorAll('td');
-        allCells.forEach(cell => cell.disabled = true);
+        gameOver = true;
+        disableAllCells();
         return;
       }
 
@@ -121,13 +121,18 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
         // Check for game over after computer's attack
         if (isGameOver(player1)) {
           console.log(`${player1.name} Wins!`);
-          const allCells = document.querySelectorAll('td');
-          allCells.forEach(cell => cell.disabled = true);
+          gameOver = true;
+          disableAllCells();
         }
       }, 500);
       
     });
   });
+}
+
+function disableAllCells() {
+  const allCells = document.querySelectorAll('td');
+  allCells.forEach(cell => cell.style.pointerEvents = 'none'); // Disable clicks on all cells
 }
 
 // Attach event listeners for each player
