@@ -137,6 +137,11 @@ class GameBoard {
 
       let targetShip = this.ships.find(ship => ship.name.slice(0,2) == targetBox);
 
+      if (targetBox === 'H' || targetBox === 'X') {
+         console.log("Already attacked this cell.");
+         return;
+   }
+
       if(targetBox !== 'H' && targetBox !== 'X') {
             if(targetShip) {
                targetShip.hit();
