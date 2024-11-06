@@ -108,8 +108,7 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
       playerAttack(computerPlayer, cellId);
 
       if (isGameOver(computerPlayer)) {
-        alert('all');
-        console.log(`you lose!`);
+        console.log(`you win!`);
         gameOver = true;
         disableAllCells();
         return;
@@ -120,7 +119,7 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
 
         // Check for game over after computer's attack
         if (isGameOver(player1)) {
-          console.log(`${player1.name} Wins!`);
+          console.log(`${player1.name} lose!`);
           gameOver = true;
           disableAllCells();
         }
