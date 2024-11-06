@@ -67,15 +67,9 @@ function computerAttack(player) {
 }
 
 function playerAttack(computerPlayer, cellId) {
-  // Assuming you have a reference to the computer's GameBoard object (computerBoard)
-  const cell = document.getElementById(`P2-${cellId}`); // Attack computer's board (C prefix)
+  const cell = document.getElementById(`P2-${cellId}`);
   if (!cell) { // Handle invalid cell selection by player
     console.error("Invalid cell selected by player!");
-    return;
-  }
-
-  if (cell.innerText === "H" || cell.innerText === "X") {
-    console.log("Cell already attacked. Please choose another one.");
     return;
   }
 
@@ -100,6 +94,11 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
     cell.addEventListener('click', () => {
       let cellId = cell.id.replace(`${computerPrefix}`, "");
 
+      if (cell.innerText === "H" || cell.innerText === "X") {
+        console.log("Cell already attacked. Please choose another one.");
+        return;
+      }
+
       playerAttack(computerPlayer, cellId);
 
       // Check for game over after player's attack
@@ -109,6 +108,7 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
       // }
 
       if (isGameOver(computerPlayer)) {
+        alert('all');
         console.log(`you lose!`);
         const allCells = document.querySelectorAll('td');
         allCells.forEach(cell => cell.disabled = true);

@@ -143,18 +143,14 @@ class GameBoard {
    }
 
       if(targetBox !== 'H' && targetBox !== 'X') {
-            if(targetShip) {
-               targetShip.hit();
-               console.log('hit');
-               this.board[row][col] = 'H';
+         if(targetShip) {
+            targetShip.hit();
+            console.log('hit');
+            this.board[row][col] = 'H';
             if(targetShip.isSunk()) {
                console.log(`${targetShip.name} is sunk!`);
             }
-            if(this.isAllSunk()) {
-               console.log("All the ship is sunk");
-               return 'All sunk';
-            }
-            } else {
+         } else {
             this.board[row][col] = 'X';
             console.log('Target missed');
             console.log(this.board[row][col]);
