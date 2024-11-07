@@ -219,4 +219,4 @@ attachAttackListeners(player1, computer, "P1-", "P2-");
 player1.board.fleetItems.forEach(ship => colorShip(ship, "P1"));
 
 
-computer.board.fleetItems.forEach(ship => colorShip(ship, "P2"));
+// computer.board.fleetItems.forEach(ship => colorShip(ship, "P2"));

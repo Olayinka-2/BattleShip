@@ -71,12 +71,14 @@ h2 {
    align-items: center;
 }
 
-#start {
-   border: 1px solid black;
-   background-color: none;
-   border-radius: 25px;
+#startGame {
+   background-color: transparent;
+   text-decoration: underline;
    font-size: 1.4rem;
    padding: .5rem;
+   border: none;
+   color: #007400;
+   cursor: pointer;
 }
 
 .main-player {
