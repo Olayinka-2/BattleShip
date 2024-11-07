@@ -98,6 +98,7 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
   playerCells.forEach(cell => {
     cell.addEventListener('click', () => {
       if (gameOver) {
+        document.querySelector("#playerTurn").innerText = `${player1.name} wins!`;
         console.log("Game over. No further moves allowed.");
         return;  // Exit if game is already over
       }
@@ -110,11 +111,11 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
       }
 
       playerAttack(computerPlayer, cellId);
-      // document.querySelector("#playerTurn").innerText = "Your turn";
 
       if (isGameOver(computerPlayer)) {
         console.log(`you win!`);
         gameOver = true;
+        document.querySelector("#playerTurn").innerText = `${player1.name} wins!`;
         disableAllCells();
         return;
       }
@@ -125,6 +126,7 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
         
         if (isGameOver(player1)) {
           console.log(`${player1.name} lose!`);
+          document.querySelector("#playerTurn").innerText = `${player1.name} lose!`;
           gameOver = true;
           disableAllCells();
         }
@@ -219,4 +221,4 @@ attachAttackListeners(player1, computer, "P1-", "P2-");
 player1.board.fleetItems.forEach(ship => colorShip(ship, "P1"));
 
 
-// computer.board.fleetItems.forEach(ship => colorShip(ship, "P2"));
+computer.board.fleetItems.forEach(ship => colorShip(ship, "P2"));
