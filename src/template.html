@@ -6,24 +6,26 @@
    <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
 <body>
-   <header>
-      <div class="game-name">BattleShip War</div>
-   </header>
-   <div class="start-session">
-      <h2>New Game</h2>
-      <div class="player-option">
-         <div class="option">
-            <Button id="btn-1">Player vs Player</Button>
-         </div>
-         <div class="option">
-            <button id="btn-2">Player vs Bot</button>
+   <div class="welcome-page">
+      <header>
+         <div class="game-name">BattleShip War</div>
+      </header>
+      <div class="start-session">
+         <h2>New Game</h2>
+         <div class="player-option">
+            <div class="option">
+               <Button id="btn-1">Player vs Player</Button>
+            </div>
+            <div class="option">
+               <button id="btn-2">Player vs Bot</button>
+            </div>
          </div>
       </div>
    </div>
    <main style="display: none;">
       <div class="content-container">
 
-         <h2>Let's play game <button id = 'start'>Start game</button></h2>
+         <h2 id = "playerTurn">Let's play game <button id = 'startGame'>Start game</button></h2>
 
          <div class="content-innerContainer">
             <div class="main-player">

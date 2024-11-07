@@ -64,7 +64,11 @@ function computerAttack(player) {
   const col = parseInt(cellId.slice(1)) - 1;
   const isHit = player.board.board[row][col] === "H";
 
-  setColorBasedOnHit(isHit, cell)
+  setColorBasedOnHit(isHit, cell);
+
+  setTimeout(() => {
+    document.querySelector("#playerTurn").innerText = "Your turn";
+  }, 1000);
 }
 
 function playerAttack(computerPlayer, cellId) {
@@ -106,6 +110,7 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
       }
 
       playerAttack(computerPlayer, cellId);
+      // document.querySelector("#playerTurn").innerText = "Your turn";
 
       if (isGameOver(computerPlayer)) {
         console.log(`you win!`);
@@ -115,15 +120,15 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
       }
 
       setTimeout(() => {
-        computerAttack(player1); // Attack player after a short delay
-
-        // Check for game over after computer's attack
+        document.querySelector("#playerTurn").innerText = "computer turn"
+        computerAttack(player1); 
+        
         if (isGameOver(player1)) {
           console.log(`${player1.name} lose!`);
           gameOver = true;
           disableAllCells();
         }
-      }, 500);
+      }, 1000);
       
     });
   });
@@ -132,6 +137,14 @@ function attachAttackListeners(player1, computerPlayer, playerPrefix, computerPr
 function disableAllCells() {
   const allCells = document.querySelectorAll('td');
   allCells.forEach(cell => cell.style.pointerEvents = 'none'); // Disable clicks on all cells
+}
+
+function enableAllCells() {
+  const allCells = document.querySelectorAll('td');
+  allCells.forEach(cell => {
+    cell.style.pointerEvents = 'auto';
+    cell.classList.remove('disabled');
+  });
 }
 
 function createTable(playerId) {
@@ -174,6 +187,26 @@ function createTable(playerId) {
   table.appendChild(thead);
   table.appendChild(tbody);
   return table;
+}
+
+const p2pButton = document.querySelector("#btn-2");
+const startGameBtn = document.querySelector("#startGame");
+
+p2pButton.addEventListener('click', startP2PGame);
+startGameBtn.addEventListener('click', () => {
+  document.querySelector("#playerTurn").innerText = "Your turn";
+  enableAllCells();
+  startGameBtn.style.display = "none";
+});
+
+function startP2PGame() {
+  const mainElement = document.querySelector("main");
+  const welcomePage = document.querySelector(".welcome-page");
+
+  mainElement.style.display = "block";
+  welcomePage.style.display = "none";
+
+  disableAllCells();
 }
 
 // Assuming you have elements with classes "main-player" and "automated-player"
