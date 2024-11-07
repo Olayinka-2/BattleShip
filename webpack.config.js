@@ -11,6 +11,11 @@ module.exports = {
       filename: '[name].js',
       clean: true,
    },
+   devServer: {
+      static: './dist',
+      port: 8080, // Adjust the port as needed
+      open: true // Automatically open the browser
+   },
    module: {
       rules: [
          {

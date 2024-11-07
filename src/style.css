@@ -6,6 +6,11 @@
 
 html {
    font-size: 62.5%;
+   height: 100%;
+}
+
+body {
+   height: 100%;
 }
 
 header {
@@ -13,11 +18,44 @@ header {
    align-items: center;
    justify-content: center;
    background: rgb(207, 205, 205);
+   
 }
 
 header div {
-   font-size: 2.4rem;
+   font-size: 7rem;
    padding: 1rem 0;
+}
+
+.start-session {
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.player-option {
+   display: flex;
+   justify-content: space-between;
+   width: 40rem;
+}
+
+.option button {
+   padding: 1rem;
+   font-size: 2rem;
+   background: transparent;
+   outline: none;
+   border: 1px solid black;
+   cursor: pointer ;
+}
+
+.option button:hover {
+   background: black;
+   color: #fff;
+}
+
+.start-session > h2 {
+   font-size: 4rem;
+   margin: 10rem 0 5rem;
 }
 
 .content-container {
@@ -31,6 +69,14 @@ h2 {
 .content-innerContainer {
    display: flex;
    align-items: center;
+}
+
+#start {
+   border: 1px solid black;
+   background-color: none;
+   border-radius: 25px;
+   font-size: 1.4rem;
+   padding: .5rem;
 }
 
 .main-player {
@@ -47,7 +93,7 @@ h2 {
 
 table {
    border-collapse: collapse;
-
+   table-layout: fixed;
 }
 
 td {
@@ -59,7 +105,7 @@ td {
 
 th[scope="row"] {
    font-weight: bold;
-   border: none; /* Remove border from row headers */
+   border: none; 
 }
 
 thead td {

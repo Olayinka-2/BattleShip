@@ -134,7 +134,53 @@ function disableAllCells() {
   allCells.forEach(cell => cell.style.pointerEvents = 'none'); // Disable clicks on all cells
 }
 
-// Attach event listeners for each player
+function createTable(playerId) {
+  // Define table elements
+  const table = document.createElement('table');
+  const thead = document.createElement('thead');
+  const tbody = document.createElement('tbody');
+
+  // Create the header row with column numbers
+  const headerRow = document.createElement('tr');
+  headerRow.appendChild(document.createElement('td')); // Empty cell at the top-left
+  for (let i = 1; i <= 10; i++) {
+      const cell = document.createElement('td');
+      cell.textContent = i;
+      headerRow.appendChild(cell);
+  }
+  thead.appendChild(headerRow);
+
+  // Create rows for each letter (A to J)
+  const rows = 'ABCDEFGHIJ';
+  for (let i = 0; i < rows.length; i++) {
+      const row = document.createElement('tr');
+      
+      // Row header with letter
+      const rowHeader = document.createElement('th');
+      rowHeader.scope = 'row';
+      rowHeader.textContent = rows[i];
+      row.appendChild(rowHeader);
+
+      // Cells with IDs
+      for (let j = 1; j <= 10; j++) {
+          const cell = document.createElement('td');
+          cell.id = `${playerId}-${rows[i]}${j}`;
+          row.appendChild(cell);
+      }
+      tbody.appendChild(row);
+  }
+
+  // Assemble the table
+  table.appendChild(thead);
+  table.appendChild(tbody);
+  return table;
+}
+
+// Assuming you have elements with classes "main-player" and "automated-player"
+document.querySelector('.main-player').appendChild(createTable('P1'));
+document.querySelector('.automated-player').appendChild(createTable('P2'));
+
+
 attachAttackListeners(player1, computer, "P1-", "P2-");
 
 player1.board.fleetItems.forEach(ship => colorShip(ship, "P1"));
