@@ -48,6 +48,11 @@ header div {
    cursor: pointer ;
 }
 
+#startGame {
+   display: block;
+   margin: 0 auto;
+}
+
 .option button:hover {
    background: black;
    color: #fff;
