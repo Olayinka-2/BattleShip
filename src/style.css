@@ -120,3 +120,19 @@ thead td {
    font-weight: bold;
    border: none; 
 }
+
+#ship-container {
+   display: flex;
+   gap: 10px;
+   margin-bottom: 20px;
+ }
+ 
+ .ship {
+   width: 100px;
+   height: 20px;
+   background-color: lightgray;
+   text-align: center;
+   line-height: 20px;
+   cursor: grab;
+ }
+ 

@@ -3,8 +3,8 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title><%= htmlWebpackPlugin.options.title %></title>
-</head>
+   <title>Battleship Game</title>
+<script defer src="bundle.js"></script></head>
 <body>
    <div class="welcome-page">
       <header>
@@ -25,19 +25,10 @@
    <main style="display: none;">
       <div class="content-container">
 
-         <h2 id = "playerTurn">Let's play game <button id = "startGame">Start game</button></h2>
+         <h2 id = "playerTurn">Let's play game <button id = 'startGame'>Start game</button></h2>
 
          <div class="content-innerContainer">
-            
-             
             <div class="main-player">
-               <div id="ship-container">
-                  <div class="ship" id="Carrier" draggable="true" data-length="5">Carrier</div>
-                  <div class="ship" id="BattleShip" draggable="true" data-length="4">BattleShip</div>
-                  <div class="ship" id="Cruiser" draggable="true" data-length="3">Cruiser</div>
-                  <div class="ship" id="Submarine" draggable="true" data-length="3">Submarine</div>
-                  <div class="ship" id="Destroyer" draggable="true" data-length="2">Destroyer</div>
-                </div>
                
             </div>
             <div class="automated-player">
