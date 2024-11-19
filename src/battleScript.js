@@ -102,6 +102,8 @@ class GameBoard {
          return false;
       }
 
+      // let targetArray = this.board[row];
+
       for(let i = 0; i < ship.length; i++) {
          let targetRow = orientation === 'horizontal' ? row : row + i;
          let targetCol = orientation === 'horizontal' ? col + i : col;
@@ -125,82 +127,46 @@ class GameBoard {
       return false;
    }
 
-   // placeShip(coordinates, orientation, shipType, length = null) {
-   //    const ship = length ? new Ship(length, shipType) : this.#getShipType(shipType);
-   //    if (!ship) return false;
-    
-   //    const { row, col } = this.#parseCoordinates(coordinates);
-    
-   //    // Check if ship fits within bounds
-   //    if (
-   //      (orientation === 'horizontal' && col + ship.length > 10) ||
-   //      (orientation === 'vertical' && row + ship.length > 10)
-   //    ) {
-   //      return false;
-   //    }
-    
-   //    // Check for overlapping ships
-   //    for (let i = 0; i < ship.length; i++) {
-   //      const targetRow = orientation === 'horizontal' ? row : row + i;
-   //      const targetCol = orientation === 'horizontal' ? col + i : col;
-    
-   //      if (this.board[targetRow][targetCol] !== null) {
-   //        return false; // Space already occupied
-   //      }
-   //    }
-    
-   //    // Place ship on board
-   //    for (let i = 0; i < ship.length; i++) {
-   //      const targetRow = orientation === 'horizontal' ? row : row + i;
-   //      const targetCol = orientation === 'horizontal' ? col + i : col;
-   //      this.board[targetRow][targetCol] = ship.name.slice(0, 2);
-   //    }
-   //    return true;
-   //  }
-    
-
    isAllSunk() {
       const allSunk = this.ships.every(ship => ship.isSunk());
       console.log("All ships sunk:", allSunk);
       return allSunk;
    }
    
+
    receiveAttack(coordinates) {
-      const { row, col } = this.#parseCoordinates(coordinates);
-      console.log(`Received attack at: Row ${row}, Col ${col}`);
-      const targetBox = this.board[row]?.[col];
-    
-      if (!targetBox) {
-        console.error(`Invalid cell at Row ${row}, Col ${col}`);
-        return;
-      }
-    
+
+      let {row, col} = this.#parseCoordinates(coordinates);
+      let targetBox = this.board[row][col] ;
+
       if (targetBox === 'H' || targetBox === 'X') {
-        console.log(`Cell already attacked: ${targetBox}`);
-        return;
+         console.log("Already attacked this cell.");
+         return;
       }
-    
+
       if (targetBox === null) {
-        this.board[row][col] = 'X';
-        console.log("Miss! No ship at this location.");
-        return;
+         this.board[row][col] = 'X';
+         console.log("Miss! No ship at this location.");
+         return;
       }
-    
-      const targetShip = this.ships.find(ship => ship.name.slice(0, 2) === targetBox);
-      if (targetShip) {
-        targetShip.hit();
-        this.board[row][col] = 'H';
-        console.log(`Hit on ${targetShip.name}`);
-        if (targetShip.isSunk()) {
-          console.log(`${targetShip.name} is sunk!`);
-        }
-      } else {
-        console.error("Error: Could not find a ship for this attack.");
-      }
-    }
-    
-   
-    printGameBoard() {
+
+      let targetShip = this.ships.find(ship => ship.name.slice(0,2) == targetBox);
+
+         if(targetShip) {
+            targetShip.hit();
+            console.log('hit');
+            this.board[row][col] = 'H';
+            if(targetShip.isSunk()) {
+               console.log(`${targetShip.name} is sunk!`);
+            }
+         } else {
+            console.error("Error: Could not find a ship for this attack.");
+            return;
+         }
+   }
+
+    // Pretty print function
+   printGameBoard() {
       const rows = 'ABCDEFGHIJ';  // Rows labeled A-J
       const columns = Array.from({ length: 10 }, (_, i) => i + 1); // Columns labeled 0-9
 

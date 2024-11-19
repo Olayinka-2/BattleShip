@@ -25,16 +25,14 @@ function startGame(mode) {
   document.querySelector("main").style.display = "block";
   document.querySelector(".welcome-page").style.display = "none";
 
-  player1 = new Player('Player 1', false);
+  player1 = new Player('Player 1', true);
   if (mode === "PvP") {
     player2 = new Player('Player 2', true);
     initializeGame("P1", "P2", attachAttackListenersPvP);
   } else {
     computer = new Player('Computer', true);
     initializeGame("P1", "computer", attachAttackListenersPvB);
-    enableDragAndDropForPlayer1();
   }
-  console.log(player1.board.ships)
 }
 
 // Initialize boards and color ships
@@ -51,16 +49,10 @@ function initializeGame(playerPrefix1, playerPrefix2, attachListeners) {
 
 // Start playing and enable cells
 function startPlaying() {
-  if (player1.board.ships.length < 5) {
-    alert('Place all your ships before starting the game!');
-    return;
-  }
-
   enableAllCells();
   document.querySelector("#startGame").style.display = "none";
   document.querySelector("#playerTurn").innerText = "Player 1's turn";
 }
-
 
 // Color ships on the board
 function colorShip(fleetItems, playerPrefix) {
@@ -212,93 +204,3 @@ function isGameOver(player) {
   return player.board.isAllSunk();
 }
 
-const draggableShips = [
-  { type: 'Carrier', length: 5 },
-  { type: 'BattleShip', length: 4 },
-  { type: 'Cruiser', length: 3 },
-  { type: 'Submarine', length: 3 },
-  { type: 'Destroyer', length: 2 }
-];
-
-function isValidShipType(shipType) {
-  const matchingShips = draggableShips.find(ship => ship.type.toLowerCase() === shipType.toLowerCase());
-  return !!matchingShips;
-}
-
-
-function dragStart(event) {
-  if(isValidShipType(event.target.innerText)) {
-    const matchingShip = draggableShips.find(ship => ship.type.toLowerCase() === event.target.innerText.toLowerCase());
-    const shipId = event.target.id;
-    const length = matchingShip.length;
-    event.dataTransfer.setData('text/plain', JSON.stringify({ shipId, length }));
-  }
-}
-
-
-// Allow dropping on game board cells
-document.querySelectorAll('td[id^="P1-"]').forEach(cell => {
-  cell.addEventListener('dragover', e => allowDrop(e));
-  cell.addEventListener('drop', e => dropShip(e));
-});
-
-function allowDrop(event) {
-  event.preventDefault();
-  event.target.classList.add('drag-over');
-}
-
-function dragLeave(event) {
-  event.target.classList.remove('drag-over');
-}
-
-function dropShip(event) {
-  event.preventDefault();
-  event.target.classList.remove('drag-over');
-
-  const data = JSON.parse(event.dataTransfer.getData('text/plain'));
-  const { shipId, length } = data;
-  const targetCellId = event.target.id.split('-')[1];
-
-  // Get orientation based on key press (default to horizontal)
-  const orientation = event.shiftKey ? 'vertical' : 'horizontal';
-
-  // Attempt to place the ship
-  const isPlaced = player1.board.placeShip(targetCellId, orientation, shipId, parseInt(length));
-  
-  if (isPlaced) {
-      // Color the ship on the board
-      colorShip([{ 
-          coord: targetCellId, 
-          orientation: orientation, 
-          ship: { length, type: shipId } 
-      }], 'P1');
-
-      // Remove the ship from the draggable area
-      const shipElement = document.getElementById(shipId);
-      if (shipElement) {
-          shipElement.remove();
-      }
-
-      // Check if all ships are placed
-      if (document.querySelectorAll('.ship').length === 0) {
-          document.getElementById('startGame').disabled = false;
-      }
-  } else {
-      alert('Invalid placement! Please try another position.');
-  }
-}
-
-function enableDragAndDropForPlayer1() {
-  document.querySelectorAll('td[id^="P1-"]').forEach(cell => {
-      cell.addEventListener('dragover', allowDrop);
-      cell.addEventListener('dragleave', dragLeave);
-      cell.addEventListener('drop', dropShip);
-  });
-
-  document.querySelectorAll('.ship').forEach(ship => {
-      ship.addEventListener('dragstart', dragStart);
-  });
-
-  // Disable start game button until all ships are placed
-  document.getElementById('startGame').disabled = true;
-}
