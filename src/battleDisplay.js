@@ -213,23 +213,58 @@ function addDragAndDrop() {
       event.preventDefault();
     });
   });
-  tableCells.forEach(cell => {
-    cell.addEventListener('drop', (event) => {
-      event.preventDefault();
+  // tableCells.forEach(cell => {
+  //   cell.addEventListener('drop', (event) => {
+  //     event.preventDefault();
     
-      const data = event.dataTransfer.getData("text/plain");
-      const draggedElement = document.getElementById(data);
+  //     const data = event.dataTransfer.getData("text/plain");
+  //     const draggedElement = document.getElementById(data);
     
-      if(draggedElement.tagName === 'DIV') {
-        event.target.style.backgroundColor = "Red";
-      }
-    });
-  });
+  //     if(draggedElement.tagName === 'DIV') {
+  //       event.target.style.backgroundColor = "Red";
+  //     }
+  //   });
+  // });
   
+  tableCells.forEach(cell => {
+    cell.addEventListener('drop', dropShip);
+  });
+
   draggableDiv.forEach(div => {
     div.addEventListener('dragstart', (event) => {
-      event.dataTransfer.setData("text/plain", event.target.id);
+      let targetID = event.target.id;
+      let length = event.target.dataset.length;
+        event.dataTransfer.setData("text/plain", JSON.stringify({targetID, length}));
     });
   });
   
+}
+
+function dropShip(event) {
+  event.preventDefault();
+  const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+  const { targetID, length} = data;
+  console.log(data);
+
+  const targetCell = event.target;
+  const targetCellId = targetCell.id;
+  const coord = targetCellId.split("-").slice(1).join("");
+
+  colors(coord, 'vertical', length, targetID, 'P1');
+
+}
+
+
+
+
+function colors(coord, orientation, length, type, playerPrefix) {
+  const startRow = coord.charCodeAt(0) - 65;
+  const startCol = parseInt(coord.substring(1)) - 1;
+
+  for (let i = 0; i < length; i++) {
+    const row = orientation === 'vertical' ? startRow + i : startRow;
+    const col = orientation === 'vertical' ? startCol : startCol + i;
+    const cell = document.getElementById(`${playerPrefix}-${String.fromCharCode(row + 65) + (col + 1)}`);
+    if (cell) cell.style.backgroundColor = shipColors[type];
+  }
 }
