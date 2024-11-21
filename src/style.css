@@ -121,3 +121,16 @@ thead td {
    border: none; 
 }
 
+#ship-container {
+   display: flex;
+   gap: 1rem;
+   align-items: flex-start;
+}
+
+.ship {
+   background: grey;
+   padding: 1rem;
+   font-size: 1.6rem;
+   color: black;
+   cursor: grab;
+}

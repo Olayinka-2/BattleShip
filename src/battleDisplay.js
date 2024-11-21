@@ -5,6 +5,7 @@ import './style.css';
 let gameOver = false;
 let currentTurn = "player1";  
 let player1, player2, computer;
+const draggableDiv = document.querySelectorAll(".ship");
 
 // Ship color mapping
 const shipColors = {
@@ -31,7 +32,7 @@ function startGame(mode) {
     initializeGame("P1", "P2", attachAttackListenersPvP);
   } else {
     computer = new Player('Computer', true);
-    initializeGame("P1", "computer", attachAttackListenersPvB);
+    initializeGame("P1", "P2", attachAttackListenersPvB);
   }
 }
 
@@ -41,10 +42,10 @@ function initializeGame(playerPrefix1, playerPrefix2, attachListeners) {
   createAndAppendTable('.main-player', playerPrefix1);
   createAndAppendTable('.automated-player', playerPrefix2);
 
-  if (computer) colorShip(player1.board.fleetItems, playerPrefix1);
+  // if (computer) colorShip(player1.board.fleetItems, playerPrefix1);
 
   attachListeners();
-  disableAllCells();
+  // disableAllCells();
 }
 
 // Start playing and enable cells
@@ -197,6 +198,7 @@ function createTable(playerId) {
   });
 
   table.appendChild(tbody);
+  addDragAndDrop();
   return table;
 }
 
@@ -204,3 +206,30 @@ function isGameOver(player) {
   return player.board.isAllSunk();
 }
 
+function addDragAndDrop() {
+  const tableCells = document.querySelectorAll("td");
+  tableCells.forEach(cell => {
+    cell.addEventListener("dragover", (event) => {
+      event.preventDefault();
+    });
+  });
+  tableCells.forEach(cell => {
+    cell.addEventListener('drop', (event) => {
+      event.preventDefault();
+    
+      const data = event.dataTransfer.getData("text/plain");
+      const draggedElement = document.getElementById(data);
+    
+      if(draggedElement.tagName === 'DIV') {
+        event.target.style.backgroundColor = "Red";
+      }
+    });
+  });
+  
+  draggableDiv.forEach(div => {
+    div.addEventListener('dragstart', (event) => {
+      event.dataTransfer.setData("text/plain", event.target.id);
+    });
+  });
+  
+}
