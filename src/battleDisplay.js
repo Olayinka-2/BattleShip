@@ -220,32 +220,31 @@ function dropShip(event) {
   isHorizontal = orientation === 'horizontal' ? true : false;
   
 
-  if (!isValidPlacement(coord, isHorizontal, length, targetCellId)) {
-    console.log('invalid');
+  if (!isValidPlacement(coord, isHorizontal, length)) {
     return; // Prevent invalid placement
   }
 
   colors(coord, orientation, length, targetID, 'P1');
 
   lastPlacedShip = document.querySelector(`#${targetID}`);
-  lastPlacedTableCell = event.target;
+  lastPlacedTableCell = event.target; 
 }
 
-function isValidPlacement(coord, isHorizontal, length, targetCellId) {
+function isValidPlacement(coord, isHorizontal, shipLength) {
   const startRow = parseInt(coord.charCodeAt(0) - 65);
   const startCol = parseInt(coord.substring(1)) - 1;
 
   if(isHorizontal) {
-    if(startCol + Number(length) - 1 >= 10) {
+    if(startCol + Number(shipLength) - 1 >= 10) {
       return false;
     } 
   } else {
-    if(startRow + Number(length) - 1 >= 10) {
+    if(startRow + Number(shipLength) - 1 >= 10) {
       return false;
     }
   }
 
-  for(let i = 0; i < length; i++) {
+  for(let i = 0; i < shipLength; i++) {
     const row = isHorizontal ? startRow : startRow + i;
     const col = isHorizontal ? startCol + 1 : startCol;
     const cellId = `P1-${String.fromCharCode(row + 65) + (col + 1)}`;
@@ -271,19 +270,24 @@ document.getElementById('toggle-orientation').addEventListener("click", () => {
 });
 
 function repaintShip(shipElement, lastOrientation) {
+  
   const shipLength = parseInt(shipElement.dataset.length);
   const newOrientation = shipElement.dataset.orientation;
   const shipId = shipElement.id;
   const lastPlacedTableCellID = lastPlacedTableCell.id;
 
-  // Clear existing ship color
-  clearShipColor(lastPlacedTableCell, lastOrientation, shipLength);
-  console.log(lastPlacedTableCellID);
-
-  // Recalculate cell coordinates based on new orientation
   const coord = lastPlacedTableCellID.split("-")[1];
   const startRow = coord.charCodeAt(0) - 65;
   const startCol = parseInt(coord.substring(1)) - 1;
+
+  // Clear existing ship color
+  if(!isValidPlacement(coord, isHorizontal, shipLength)) {
+    return;
+  }
+
+  clearShipColor(lastPlacedTableCell, lastOrientation, shipLength);
+
+  // Recalculate cell coordinates based on new orientation
 
   colors(coord, newOrientation, shipLength, shipId.split("-")[0], 'P1'); // Update colors based on orientation
 }
