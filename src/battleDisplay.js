@@ -229,8 +229,6 @@ function dropShip(event) {
 
   lastPlacedShip = document.querySelector(`#${targetID}`);
   lastPlacedTableCell = event.target;
-  console.log(lastPlacedShip);
-  console.log(lastPlacedTableCell);
 }
 
 function isValidPlacement(coord, isHorizontal, length, targetCellId) {
@@ -276,23 +274,24 @@ function repaintShip(shipElement, lastOrientation) {
   const shipLength = parseInt(shipElement.dataset.length);
   const newOrientation = shipElement.dataset.orientation;
   const shipId = shipElement.id;
+  const lastPlacedTableCellID = lastPlacedTableCell.id;
 
   // Clear existing ship color
   clearShipColor(lastPlacedTableCell, lastOrientation, shipLength);
+  console.log(lastPlacedTableCellID);
 
   // Recalculate cell coordinates based on new orientation
-  // const coord = shipId.split("-")[1];
-  // const startRow = coord.charCodeAt(0) - 65;
-  // const startCol = parseInt(coord.substring(1)) - 1;
+  const coord = lastPlacedTableCellID.split("-")[1];
+  const startRow = coord.charCodeAt(0) - 65;
+  const startCol = parseInt(coord.substring(1)) - 1;
 
-  // colors(coord, newOrientation, shipLength, shipId.split("-")[0], 'P1'); // Update colors based on orientation
+  colors(coord, newOrientation, shipLength, shipId.split("-")[0], 'P1'); // Update colors based on orientation
 }
 
 function clearShipColor(lastCell, lastOrientation, shipLength) {
   const [row, col] = lastCell.id.split('-').slice(1)[0];
   const startRow = parseInt(row.charCodeAt(0) - 65);
   const startCol = parseInt(col) - 1;
-  // const shipLength = parseInt(lastPlacedShip.dataset.length);
 
   for (let i = 0; i < shipLength; i++) {
     const row = lastOrientation === 'vertical' ? startRow + i : startRow;
