@@ -207,34 +207,85 @@ function addDragAndDrop() {
   
 }
 
+// function dropShip(event) {
+//   event.preventDefault();
+//   const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+//   const { targetID, length} = data;
+
+//   const targetCell = event.target;
+//   const targetCellId = targetCell.id;
+//   const coord = targetCellId.split("-").slice(1).join("");
+
+//   orientation = document.querySelector(`#${targetID}`).dataset.orientation;
+//   isHorizontal = orientation === 'horizontal' ? true : false;
+  
+
+//   if (!isValidPlacement(coord, orientation, length)) {
+//     console.log('invalid')
+//     return; // Prevent invalid placement
+//   }
+
+//   colors(coord, orientation, length, targetID, 'P1');
+
+//   lastPlacedShip = document.querySelector(`#${targetID}`);
+//   lastPlacedTableCell = event.target; 
+// }
+
+// function isValidPlacement(coord, orientation, shipLength) {
+//   const startRow = parseInt(coord.charCodeAt(0) - 65);
+//   const startCol = parseInt(coord.substring(1)) - 1;
+
+//   if (orientation === "horizontal") {
+//     if (startCol + parseInt(shipLength) - 1 >= 10) {
+//       return false; // Out of bounds
+//     }
+//   } else { // vertical
+//     if (startRow + parseInt(shipLength) - 1 >= 10) {
+//       return false; // Out of bounds
+//     }
+//   }
+
+//   for (let i = 0; i < parseInt(shipLength); i++) {
+//     const row = orientation === "horizontal" ? startRow : startRow + i;
+//     const col = orientation === "horizontal" ? startCol + i : startCol;
+//     const cellId = `P1-${String.fromCharCode(row + 65) + (col + 1)}`;
+//     const cell = document.getElementById(cellId);
+//     if (cell && cell.style.backgroundColor !== "") {
+//       return false;
+//     }
+//   }
+//   return true;
+// }
+
 function dropShip(event) {
   event.preventDefault();
   const data = JSON.parse(event.dataTransfer.getData('text/plain'));
-  const { targetID, length} = data;
+  const { targetID, length } = data;
 
   const targetCell = event.target;
   const targetCellId = targetCell.id;
   const coord = targetCellId.split("-").slice(1).join("");
 
   orientation = document.querySelector(`#${targetID}`).dataset.orientation;
-  isHorizontal = orientation === 'horizontal' ? true : false;
-  
+  isHorizontal = orientation === 'horizontal';
 
-  if (!isValidPlacement(coord, isHorizontal, length)) {
+  if (!isValidPlacement(coord, orientation, length)) {
+    console.log('Invalid placement');
     return; // Prevent invalid placement
   }
 
+  // Apply colors and update state
   colors(coord, orientation, length, targetID, 'P1');
-
   lastPlacedShip = document.querySelector(`#${targetID}`);
-  lastPlacedTableCell = event.target; 
+  lastPlacedTableCell = targetCell; // Update the reference
 }
 
-function isValidPlacement(coord, isHorizontal, shipLength) {
-  const startRow = parseInt(coord.charCodeAt(0) - 65);
+
+function isValidPlacement(coord, orientation, shipLength) {
+  const startRow = coord.charCodeAt(0) - 65;
   const startCol = parseInt(coord.substring(1)) - 1;
 
-  if(isHorizontal) {
+  if(orientation === 'horizontal') {
     if(startCol + Number(shipLength) - 1 >= 10) {
       return false;
     } 
@@ -244,13 +295,17 @@ function isValidPlacement(coord, isHorizontal, shipLength) {
     }
   }
 
-  for(let i = 0; i < shipLength; i++) {
-    const row = isHorizontal ? startRow : startRow + i;
-    const col = isHorizontal ? startCol + 1 : startCol;
+
+  for (let i = 0; i < shipLength; i++) {
+    const row = orientation === 'horizontal' ? startRow : startRow + i;
+    const col = orientation === 'horizontal' ? startCol + i : startCol;
+
     const cellId = `P1-${String.fromCharCode(row + 65) + (col + 1)}`;
     const cell = document.getElementById(cellId);
-    if(cell && cell.style.backgroundColor !== "") {
-      return false;
+    
+    // Ensure the cell is either empty or already part of the current ship placement
+    if (cell && cell.style.backgroundColor !== '' && cell !== lastPlacedTableCell) {
+      return false; // Invalid placement
     }
   }
   return true;
@@ -265,45 +320,78 @@ document.getElementById('toggle-orientation').addEventListener("click", () => {
     lastPlacedShip.classList.remove(lastOrientation);
     lastPlacedShip.classList.add(newOrientation);
     orientation = newOrientation;
-    repaintShip(lastPlacedShip, lastOrientation);
+    repaintShip(lastPlacedShip, lastOrientation, lastPlacedTableCell);
   }
 });
 
-function repaintShip(shipElement, lastOrientation) {
+// function repaintShip(shipElement, lastOrientation, lastPlacedTableCell) {
   
+//   const shipLength = parseInt(shipElement.dataset.length);
+//   const newOrientation = shipElement.dataset.orientation;
+//   const shipId = shipElement.id;
+//   const lastPlacedTableCellID = lastPlacedTableCell.id;
+
+//   const coord = lastPlacedTableCellID.split("-")[1];
+//   console.log(coord);
+
+//   // Clear existing ship color
+//   if(!isValidPlacement(coord, lastOrientation, shipLength)) {
+//     console.log('invalid')
+//     return;
+//   }
+
+//   clearShipColor(lastPlacedTableCell, lastOrientation, shipLength);
+
+//   colors(coord, newOrientation, shipLength, shipId.split("-")[0], 'P1');
+// }
+
+// function clearShipColor(lastCell, lastOrientation, shipLength) {
+//   const [row, col] = lastCell.id.split('-').slice(1)[0];
+//   const startRow = parseInt(row.charCodeAt(0) - 65);
+//   const startCol = parseInt(col) - 1;
+
+//   for (let i = 0; i < shipLength; i++) {
+//     const row = lastOrientation === 'vertical' ? startRow + i : startRow;
+//     const col = lastOrientation === 'vertical' ? startCol : startCol + i;
+//     const cell = document.getElementById(`P1-${String.fromCharCode(row + 65) + (col + 1)}`);
+//     if (cell) cell.style.backgroundColor = '';
+//   }
+// }
+
+function repaintShip(shipElement, lastOrientation, lastPlacedTableCell) {
   const shipLength = parseInt(shipElement.dataset.length);
   const newOrientation = shipElement.dataset.orientation;
-  const shipId = shipElement.id;
   const lastPlacedTableCellID = lastPlacedTableCell.id;
 
   const coord = lastPlacedTableCellID.split("-")[1];
-  const startRow = coord.charCodeAt(0) - 65;
-  const startCol = parseInt(coord.substring(1)) - 1;
 
-  // Clear existing ship color
-  if(!isValidPlacement(coord, isHorizontal, shipLength)) {
-    return;
-  }
-
+  // Clear the current ship placement
   clearShipColor(lastPlacedTableCell, lastOrientation, shipLength);
 
-  // Recalculate cell coordinates based on new orientation
-
-  colors(coord, newOrientation, shipLength, shipId.split("-")[0], 'P1'); // Update colors based on orientation
+  // Validate and repaint the new orientation
+  if (isValidPlacement(coord, newOrientation, shipLength)) {
+    colors(coord, newOrientation, shipLength, shipElement.id.split("-")[0], 'P1');
+  } else {
+    // Revert to the old orientation if invalid
+    shipElement.dataset.orientation = lastOrientation;
+    colors(coord, lastOrientation, shipLength, shipElement.id.split("-")[0], 'P1');
+  }
 }
 
+
 function clearShipColor(lastCell, lastOrientation, shipLength) {
-  const [row, col] = lastCell.id.split('-').slice(1)[0];
-  const startRow = parseInt(row.charCodeAt(0) - 65);
-  const startCol = parseInt(col) - 1;
+  const coord = lastCell.id.split("-")[1];
+  const startRow = coord.charCodeAt(0) - 65;
+  const startCol = parseInt(coord.substring(1)) - 1;
 
   for (let i = 0; i < shipLength; i++) {
     const row = lastOrientation === 'vertical' ? startRow + i : startRow;
     const col = lastOrientation === 'vertical' ? startCol : startCol + i;
     const cell = document.getElementById(`P1-${String.fromCharCode(row + 65) + (col + 1)}`);
-    if (cell) cell.style.backgroundColor = '';
+    if (cell) cell.style.backgroundColor = ''; // Clear the color
   }
 }
+
 
 // Color ships on the board
 function colorShip(fleetItems, playerPrefix) {
