@@ -1,13 +1,12 @@
 import { Player, GameBoard } from "./battleScript";
 import './style.css';
 
-// Global variables
 let gameOver = false;
 let currentTurn = "player1";  
-let player1, player2, computer;
+let player1, player2, computer, lastPlacedShip, isHorizontal, lastPlacedTableCell;
+let orientation;
 const draggableDiv = document.querySelectorAll(".ship");
 
-// Ship color mapping
 const shipColors = {
   Carrier: 'Cyan',
   BattleShip: 'Blue',
@@ -16,12 +15,10 @@ const shipColors = {
   Destroyer: 'Orange'
 };
 
-// Event Listeners
 document.getElementById("btn-1").addEventListener("click", () => startGame("PvP"));
 document.getElementById("btn-2").addEventListener("click", () => startGame("PvB"));
 document.getElementById("startGame").addEventListener("click", startPlaying);
 
-// Main game start function
 function startGame(mode) {
   document.querySelector("main").style.display = "block";
   document.querySelector(".welcome-page").style.display = "none";
@@ -48,36 +45,19 @@ function initializeGame(playerPrefix1, playerPrefix2, attachListeners) {
   // disableAllCells();
 }
 
-// Start playing and enable cells
 function startPlaying() {
   enableAllCells();
   document.querySelector("#startGame").style.display = "none";
   document.querySelector("#playerTurn").innerText = "Player 1's turn";
 }
 
-// Color ships on the board
-function colorShip(fleetItems, playerPrefix) {
-  fleetItems.forEach(ship => {
-    const { coord, orientation, ship: { length, type } } = ship;
-    const startRow = coord.charCodeAt(0) - 65;
-    const startCol = parseInt(coord.substring(1)) - 1;
-
-    for (let i = 0; i < length; i++) {
-      const row = orientation === 'vertical' ? startRow + i : startRow;
-      const col = orientation === 'vertical' ? startCol : startCol + i;
-      const cell = document.getElementById(`${playerPrefix}-${String.fromCharCode(row + 65) + (col + 1)}`);
-      if (cell) cell.style.backgroundColor = shipColors[type];
-    }
-  });
-}
-
 function attachAttackListenersPvP() {
-  // Add event listeners for Player 2's board
+
   document.querySelectorAll(`td[id^="P2-"]`).forEach(cell => 
     cell.addEventListener('click', () => handlePvPAttack(cell, player2, "player1", "Player 1 wins!"))
   );
 
-  // Add event listeners for Player 1's board
+
   document.querySelectorAll(`td[id^="P1-"]`).forEach(cell => 
     cell.addEventListener('click', () => handlePvPAttack(cell, player1, "player2", "Player 2 wins!"))
   );
@@ -97,7 +77,7 @@ function handlePvPAttack(cell, defender, turn, winText) {
   // Update the turn status and check if the game is over
   updateTurnStatus(defender, winText);
 }
-// PvB Mode attack listeners
+
 function attachAttackListenersPvB() {
   document.querySelectorAll(`td[id^="P2-"]`).forEach(cell => 
     cell.addEventListener('click', () => {
@@ -134,7 +114,6 @@ function computerAttack(player) {
   updateTurnStatus(player, "Computer wins!");
 }
 
-// Utility functions
 function getRandomCoordinates() { 
   const row = String.fromCharCode(65 + Math.floor(Math.random() * 10));
   const col = Math.floor(Math.random() * 10) + 1;
@@ -213,18 +192,6 @@ function addDragAndDrop() {
       event.preventDefault();
     });
   });
-  // tableCells.forEach(cell => {
-  //   cell.addEventListener('drop', (event) => {
-  //     event.preventDefault();
-    
-  //     const data = event.dataTransfer.getData("text/plain");
-  //     const draggedElement = document.getElementById(data);
-    
-  //     if(draggedElement.tagName === 'DIV') {
-  //       event.target.style.backgroundColor = "Red";
-  //     }
-  //   });
-  // });
   
   tableCells.forEach(cell => {
     cell.addEventListener('drop', dropShip);
@@ -244,18 +211,112 @@ function dropShip(event) {
   event.preventDefault();
   const data = JSON.parse(event.dataTransfer.getData('text/plain'));
   const { targetID, length} = data;
-  console.log(data);
 
   const targetCell = event.target;
   const targetCellId = targetCell.id;
   const coord = targetCellId.split("-").slice(1).join("");
 
-  colors(coord, 'vertical', length, targetID, 'P1');
+  orientation = document.querySelector(`#${targetID}`).dataset.orientation;
+  isHorizontal = orientation === 'horizontal' ? true : false;
+  
 
+  if (!isValidPlacement(coord, isHorizontal, length, targetCellId)) {
+    console.log('invalid');
+    return; // Prevent invalid placement
+  }
+
+  colors(coord, orientation, length, targetID, 'P1');
+
+  lastPlacedShip = document.querySelector(`#${targetID}`);
+  lastPlacedTableCell = event.target;
+  console.log(lastPlacedShip);
+  console.log(lastPlacedTableCell);
 }
 
+function isValidPlacement(coord, isHorizontal, length, targetCellId) {
+  const startRow = parseInt(coord.charCodeAt(0) - 65);
+  const startCol = parseInt(coord.substring(1)) - 1;
 
+  if(isHorizontal) {
+    if(startCol + Number(length) - 1 >= 10) {
+      return false;
+    } 
+  } else {
+    if(startRow + Number(length) - 1 >= 10) {
+      return false;
+    }
+  }
 
+  for(let i = 0; i < length; i++) {
+    const row = isHorizontal ? startRow : startRow + i;
+    const col = isHorizontal ? startCol + 1 : startCol;
+    const cellId = `P1-${String.fromCharCode(row + 65) + (col + 1)}`;
+    const cell = document.getElementById(cellId);
+    if(cell && cell.style.backgroundColor !== "") {
+      return false;
+    }
+  }
+  return true;
+}
+
+document.getElementById('toggle-orientation').addEventListener("click", () => {
+  if(lastPlacedShip) {
+    const lastOrientation = lastPlacedShip.dataset.orientation;
+    const newOrientation = lastOrientation === "horizontal" ? "vertical" : "horizontal";
+
+    lastPlacedShip.dataset.orientation = newOrientation;
+    lastPlacedShip.classList.remove(lastOrientation);
+    lastPlacedShip.classList.add(newOrientation);
+    orientation = newOrientation;
+    repaintShip(lastPlacedShip, lastOrientation);
+  }
+});
+
+function repaintShip(shipElement, lastOrientation) {
+  const shipLength = parseInt(shipElement.dataset.length);
+  const newOrientation = shipElement.dataset.orientation;
+  const shipId = shipElement.id;
+
+  // Clear existing ship color
+  clearShipColor(lastPlacedTableCell, lastOrientation, shipLength);
+
+  // Recalculate cell coordinates based on new orientation
+  // const coord = shipId.split("-")[1];
+  // const startRow = coord.charCodeAt(0) - 65;
+  // const startCol = parseInt(coord.substring(1)) - 1;
+
+  // colors(coord, newOrientation, shipLength, shipId.split("-")[0], 'P1'); // Update colors based on orientation
+}
+
+function clearShipColor(lastCell, lastOrientation, shipLength) {
+  const [row, col] = lastCell.id.split('-').slice(1)[0];
+  const startRow = parseInt(row.charCodeAt(0) - 65);
+  const startCol = parseInt(col) - 1;
+  // const shipLength = parseInt(lastPlacedShip.dataset.length);
+
+  for (let i = 0; i < shipLength; i++) {
+    const row = lastOrientation === 'vertical' ? startRow + i : startRow;
+    const col = lastOrientation === 'vertical' ? startCol : startCol + i;
+    const cell = document.getElementById(`P1-${String.fromCharCode(row + 65) + (col + 1)}`);
+    if (cell) cell.style.backgroundColor = '';
+  }
+}
+
+// Color ships on the board
+function colorShip(fleetItems, playerPrefix) {
+  fleetItems.forEach(ship => {
+    const { coord, orientation, ship: { length, type } } = ship;
+    const startRow = coord.charCodeAt(0) - 65;
+    const startCol = parseInt(coord.substring(1)) - 1;
+
+    for (let i = 0; i < length; i++) {
+      const row = orientation === 'vertical' ? startRow + i : startRow;
+      const col = orientation === 'vertical' ? startCol : startCol + i;
+      const cell = document.getElementById(`${playerPrefix}-${String.fromCharCode(row + 65) + (col + 1)}`);
+      if (cell) cell.style.backgroundColor = shipColors[type];
+    }
+  });
+}
 
 function colors(coord, orientation, length, type, playerPrefix) {
   const startRow = coord.charCodeAt(0) - 65;

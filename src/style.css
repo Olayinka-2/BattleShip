@@ -134,3 +134,11 @@ thead td {
    color: black;
    cursor: grab;
 }
+
+.ship.horizontal {
+   transform: rotate(0deg);
+}
+
+.ship.vertical {
+   transform: rotate(90deg);
+}
