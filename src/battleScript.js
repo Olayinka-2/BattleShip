@@ -56,7 +56,7 @@ class GameBoard {
             placed = this.placeShip(`${alphabeticRow}${col}`, orientation, ship.type);
             if(placed) {
                this.fleetItems.push({"coord":`${alphabeticRow}${col}`, orientation, ship});
-               this.ships.push(this.#getShipType(ship.type));
+               // this.ships.push(this.#getShipType(ship.type));
             }
             
          }
@@ -122,6 +122,7 @@ class GameBoard {
                this.board[row + i][col] = ship.name.slice(0, 2);
             }
          }  
+         this.ships.push(ship);
          return true;
       }
       return false;
@@ -193,6 +194,5 @@ class GameBoard {
 // let player1 = new Player('computer', true);
 // console.log(player1.board.board);
 // player1.board.receiveAttack('A2');
-// player1.board.printGameBoard();
 
 export {Player, GameBoard};
