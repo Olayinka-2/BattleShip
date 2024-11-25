@@ -25,9 +25,19 @@
    <main style="display: none;">
       <div class="content-container">
 
-         <h2 id = "playerTurn">Let's play game <button id = 'startGame'>Start game</button></h2>
+         <h2 id = "playerTurn">Let's play game <button id = "startGame">Start game</button></h2>
 
          <div class="content-innerContainer">
+            <button id="toggle-orientation">Toggle orientation</button>
+               <div id="ship-container">
+                  <div class="ship horizontal" id="Carrier" draggable="true" data-length="5" data-orientation = "horizontal">Carrier</div>
+                  <div class="ship horizontal" id="BattleShip" draggable="true" data-length="4" data-orientation = "horizontal">BattleShip</div>
+                  <div class="ship horizontal" id="Cruiser" draggable="true" data-length="3" data-orientation = "horizontal">Cruiser</div>
+                  <div class="ship horizontal" id="Submarine" draggable="true" data-length="3" data-orientation = "horizontal">Submarine</div>
+                  <div class="ship horizontal" id="Destroyer" draggable="true" data-length="2" data-orientation = "horizontal">Destroyer</div>
+               </div>
+            
+            
             <div class="main-player">
                
             </div>

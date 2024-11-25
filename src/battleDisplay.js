@@ -23,7 +23,7 @@ function startGame(mode) {
   document.querySelector("main").style.display = "block";
   document.querySelector(".welcome-page").style.display = "none";
 
-  player1 = new Player('Player 1', false);
+  player1 = new Player('Player 1', true);
   if (mode === "PvP") {
     player2 = new Player('Player 2', true);
     initializeGame("P1", "P2", attachAttackListenersPvP);
@@ -38,15 +38,20 @@ function initializeGame(playerPrefix1, playerPrefix2, attachListeners) {
 
   createAndAppendTable('.main-player', playerPrefix1);
   createAndAppendTable('.automated-player', playerPrefix2);
+  document.querySelector(".automated-player").style.visibility = 'hidden';
 
   if (computer) colorShip(player1.board.fleetItems, playerPrefix1);
   player1.board.printGameBoard();
 
   attachListeners();
-  // disableAllCells();
+  disableAllCells(false);
 }
 
 function startPlaying() {
+  if(player1.board.ships.length !== 5) {
+    return;
+  }
+  document.querySelector(".automated-player").style.visibility = 'visible';
   enableAllCells();
   document.querySelector("#startGame").style.display = "none";
   document.querySelector("#playerTurn").innerText = "Player 1's turn";
@@ -136,8 +141,17 @@ function updateTurnStatus(defender, winText) {
 }
 
 
-function disableAllCells() {
-  document.querySelectorAll('td').forEach(cell => cell.style.pointerEvents = 'none');
+function disableAllCells(all = true) {
+  if(all) {
+    document.querySelectorAll('td').forEach(cell => cell.style.pointerEvents = 'none');
+    return;
+  }
+  let secondTablePlayerCells = document.querySelectorAll('td');
+  secondTablePlayerCells.forEach(cell => {
+    if(cell.id.includes('P2-')) {
+      cell.style.pointerEvents = 'none';
+    }
+  })
 }
 
 function enableAllCells() {
@@ -224,15 +238,13 @@ function dropShip(event) {
   // }
 
   let placed = player1.board.placeShip(coord, orientation, targetID);
+  console.log(placed, coord + "" + orientation + "" + targetID);
   if(placed) {
     colors(coord, orientation, length, targetID, 'P1');
     document.querySelector(`#${targetID}`).style.display = "none";
     lastPlacedShip = document.querySelector(`#${targetID}`);
     lastPlacedTableCell = targetCell; // Update the reference
   }
-  player1.board.printGameBoard();
-
-  // Apply colors and update state
 }
 
 
@@ -341,3 +353,4 @@ function colors(coord, orientation, length, type, playerPrefix) {
     if (cell) cell.style.backgroundColor = shipColors[type];
   }
 }
+
