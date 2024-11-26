@@ -55,6 +55,7 @@ function startPlaying() {
   document.querySelector(".automated-player").style.visibility = 'visible';
   enableAllCells();
   document.querySelector("#startGame").style.display = "none";
+  document.querySelector("#toggle-orientation").style.visibility = "hidden";
   document.querySelector("#playerTurn").innerText = "Player 1's turn";
 }
 
@@ -164,37 +165,40 @@ function createAndAppendTable(parentSelector, playerId) {
 }
 
 function createTable(playerId) {
-  const table = document.createElement('table');
-  const tbody = document.createElement('tbody');
+  const table = document.createElement('table'); // Create the table element
+  const tbody = document.createElement('tbody'); // Create the table body
 
+  // Create the header row for column numbers
   const headerRow = document.createElement('tr');
-  headerRow.appendChild(document.createElement('td'));
+  headerRow.appendChild(document.createElement('td')); // Empty corner cell
   for (let i = 1; i <= 10; i++) {
     const cell = document.createElement('td');
-    cell.textContent = i;
+    cell.textContent = i; // Column number
     headerRow.appendChild(cell);
   }
-  table.appendChild(headerRow);
+  table.appendChild(headerRow); // Append header row to the table
 
-  const rows = 'ABCDEFGHIJ';
+  const rows = 'ABCDEFGHIJ'; // Define row labels (A to J)
   rows.split('').forEach((row, i) => {
-    const rowElement = document.createElement('tr');
-    const rowHeader = document.createElement('th');
+    const rowElement = document.createElement('tr'); // Create a row
+    const rowHeader = document.createElement('th'); // Row header cell
     rowHeader.scope = 'row';
-    rowHeader.textContent = row;
-    rowElement.appendChild(rowHeader);
+    rowHeader.textContent = row; // Set row label (A, B, C, etc.)
+    rowElement.appendChild(rowHeader); // Add row label to the row
 
     for (let j = 1; j <= 10; j++) {
-      const cell = document.createElement('td');
-      cell.id = `${playerId}-${row}${j}`;
-      rowElement.appendChild(cell);
+      const cell = document.createElement('td'); // Create a table cell
+      cell.id = `${playerId}-${row}${j}`; // Assign unique ID to the cell
+      rowElement.appendChild(cell); // Add cell to the row
     }
-    tbody.appendChild(rowElement);
+
+    tbody.appendChild(rowElement); // Append row to the table body
   });
 
-  table.appendChild(tbody);
-  addDragAndDrop();
-  return table;
+  table.appendChild(tbody); // Append the body to the table
+
+  addDragAndDrop(); // Enable drag-and-drop functionality
+  return table; // Return the complete table
 }
 
 function isGameOver(player) {
@@ -234,10 +238,6 @@ function dropShip(event) {
 
   orientation = document.querySelector(`#${targetID}`).dataset.orientation;
 
-  // if (!isValidPlacement(coord, orientation, length)) {
-  //   return; // Prevent invalid placement
-  // }
-
   let placed = player1.board.placeShip(coord, orientation, targetID);
   if(placed) {
     colors(coord, orientation, length, targetID, 'P1');
@@ -246,9 +246,6 @@ function dropShip(event) {
     lastPlacedTableCell = targetCell; // Update the reference
     player1.board.printGameBoard();
   }
-  // colors(coord, orientation, length, targetID, 'P1');
-
-  // Apply colors and update state
 }
 
 

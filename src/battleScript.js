@@ -88,45 +88,6 @@ class GameBoard {
       };
    }
 
-   // placeShip(coordinates, orientation, shipType) {
-   //    let ship =this.#getShipType(shipType);
-   //    if(!ship) return false;
-
-   //    let {row, col} = this.#parseCoordinates(coordinates);
-
-   //    if(
-   //       (orientation === 'horizontal' && col + ship.length > 10) ||
-   //       (orientation === 'vertical' && row + ship.length > 10)
-   //    ) {
-   //       return false;
-   //    }
-
-   //    // let targetArray = this.board[row];
-
-   //    for(let i = 0; i < Number(ship.length); i++) {
-   //       const targetRow = orientation === 'horizontal' ? row : row + i;
-   //       const targetCol = orientation === 'horizontal' ? col + i : col;
-
-   //       if(this.board[targetRow] && this.board[targetRow][targetCol] !== null) {
-   //          console.log('Space occupied already');
-   //          return false;;
-   //       }
-   //    }
-   
-   //       for(let i = 0; i < ship.length; i++) {
-   //          if(orientation == 'horizontal') {
-   //             console.log(this.board[row][col + i]);
-   //             console.log(row);
-   //             console.log(col);
-   //             this.board[row][col + i] = ship.name.slice(0, 2);
-   //          } else if(orientation == 'vertical') {
-   //             this.board[row + i][col] = ship.name.slice(0, 2);
-   //          }
-   //       }  
-   //       this.ships.push(ship);
-   //       return true;
-   // }
-
    placeShip(coordinates, orientation, shipType) {
       const ship = this.#getShipType(shipType);
       if (!ship) return false;
@@ -140,7 +101,7 @@ class GameBoard {
       }
 
       if (row < 0 || row >= this.board.length || col < 0 || col >= this.board[0].length) {
-         console.error("Invalid coordinates provided. Ship placement out of bounds.");
+         // alert("Invalid coordinates provided. Ship placement out of bounds.");
          return false;
        }
   
@@ -167,7 +128,6 @@ class GameBoard {
 
    isAllSunk() {
       const allSunk = this.ships.every(ship => ship.isSunk());
-      console.log("All ships sunk:", allSunk);
       return allSunk;
    }
    
@@ -178,13 +138,11 @@ class GameBoard {
       let targetBox = this.board[row][col] ;
 
       if (targetBox === 'H' || targetBox === 'X') {
-         console.log("Already attacked this cell.");
          return;
       }
 
       if (targetBox === null) {
          this.board[row][col] = 'X';
-         console.log("Miss! No ship at this location.");
          return;
       }
 
@@ -192,39 +150,34 @@ class GameBoard {
 
          if(targetShip) {
             targetShip.hit();
-            console.log('hit');
             this.board[row][col] = 'H';
-            if(targetShip.isSunk()) {
-               console.log(`${targetShip.name} is sunk!`);
-            }
          } else {
-            console.error("Error: Could not find a ship for this attack.");
             return;
          }
    }
 
-    // Pretty print function
    printGameBoard() {
-      const rows = 'ABCDEFGHIJ';  // Rows labeled A-J
-      const columns = Array.from({ length: 10 }, (_, i) => i + 1); // Columns labeled 0-9
-
-      // Create header row
-      let boardString = '   ' + columns.map(col => col.toString().padStart(2, ' ')).join(' ') + '\n';
-
+      const rows = 'ABCDEFGHIJ'; // Rows labeled A-J
+      const columns = Array.from({ length: 10 }, (_, i) => i + 1); // Columns labeled 1-10
+  
+      // Create header with column numbers outside the board
+      let boardString = '     ' + columns.map(col => col.toString().padStart(2, ' ')).join(' ') + '\n';
+  
       // Loop through each row to build the board display
       for (let i = 0; i < rows.length; i++) {
-         const rowLabel = rows[i];
-         let rowString = rowLabel + ' |';  // Row label
-
-         for (let j = 0; j < columns.length; j++) {
-            const cell = this.board[i][j];
-            rowString += ` ${cell ? cell : '.'} |`;  // Show ship or empty cell
-         }
-         boardString += rowString + '\n';  // Add row to the board string
+          const rowLabel = rows[i]; // Row label (e.g., A, B, C...)
+          let rowString = `${rowLabel}   `; // Align row label outside the board
+  
+          for (let j = 0; j < columns.length; j++) {
+              const cell = this.board[i][j];
+              rowString += ` ${cell ? cell : '.'} `; // Add cell content (ships or empty cells)
+          }
+  
+          boardString += rowString + '\n'; // Add the row to the board string
       }
-
-      console.log(boardString);  // Print the board to the console
-   }
+  
+      console.log(boardString);
+  }
 }
 
 export {Player, GameBoard};

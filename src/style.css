@@ -77,13 +77,15 @@ h2 {
 }
 
 #startGame {
-   background-color: transparent;
-   text-decoration: underline;
+   display: block;
    font-size: 1.4rem;
    padding: .5rem;
    border: none;
-   color: #007400;
+   background-color: #52e3a2;
+   color: black;
+   border-radius: 1rem;
    cursor: pointer;
+   margin: 1rem auto 4rem;
 }
 
 .main-player {
@@ -141,4 +143,19 @@ thead td {
 
 .ship.vertical {
    transform: rotate(90deg);
+}
+
+#toggle-orientation {
+   padding: .5rem 2rem;
+   background: #52e3a2;
+   color: rgb(23, 22, 22);
+   border: none;
+   font-weight: bold;
+   margin-right: 2rem;
+   cursor: pointer;
+   transition: transform .3s ease-in-out;
+}
+
+#toggle-orientation:active{
+   transform: scale(1.1);
 }
