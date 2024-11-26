@@ -23,11 +23,12 @@ function startGame(mode) {
   document.querySelector("main").style.display = "block";
   document.querySelector(".welcome-page").style.display = "none";
 
-  player1 = new Player('Player 1', true);
   if (mode === "PvP") {
+    player1 = new Player('Player 1', false);
     player2 = new Player('Player 2', true);
     initializeGame("P1", "P2", attachAttackListenersPvP);
   } else {
+    player1 = new Player('Player 1', false);
     computer = new Player('Computer', true);
     initializeGame("P1", "P2", attachAttackListenersPvB);
   }
@@ -238,13 +239,16 @@ function dropShip(event) {
   // }
 
   let placed = player1.board.placeShip(coord, orientation, targetID);
-  console.log(placed, coord + "" + orientation + "" + targetID);
   if(placed) {
     colors(coord, orientation, length, targetID, 'P1');
     document.querySelector(`#${targetID}`).style.display = "none";
     lastPlacedShip = document.querySelector(`#${targetID}`);
     lastPlacedTableCell = targetCell; // Update the reference
+    player1.board.printGameBoard();
   }
+  // colors(coord, orientation, length, targetID, 'P1');
+
+  // Apply colors and update state
 }
 
 

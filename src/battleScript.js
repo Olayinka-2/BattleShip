@@ -88,40 +88,82 @@ class GameBoard {
       };
    }
 
-   placeShip(coordinates, orientation, shipType) {
-      let ship =this.#getShipType(shipType);
-      if(ship == null) return false;
+   // placeShip(coordinates, orientation, shipType) {
+   //    let ship =this.#getShipType(shipType);
+   //    if(!ship) return false;
 
-      let {row, col} = this.#parseCoordinates(coordinates);
+   //    let {row, col} = this.#parseCoordinates(coordinates);
 
-      if(
-         (orientation === 'horizontal' && col + ship.length > 10) ||
-         (orientation === 'vertical' && row + ship.length > 10)
-      ) {
-         return false;
-      }
-      // let targetArray = this.board[row];
+   //    if(
+   //       (orientation === 'horizontal' && col + ship.length > 10) ||
+   //       (orientation === 'vertical' && row + ship.length > 10)
+   //    ) {
+   //       return false;
+   //    }
 
-      for(let i = 0; i < Number(ship.length); i++) {
-         const targetRow = orientation === 'horizontal' ? row : row + i;
-         const targetCol = orientation === 'horizontal' ? col + i : col;
+   //    // let targetArray = this.board[row];
 
-         if(this.board[targetRow] && this.board[targetRow][targetCol] !== null) {
-            console.log('Space occupied already');
-            return false;;
-         }
-      }
+   //    for(let i = 0; i < Number(ship.length); i++) {
+   //       const targetRow = orientation === 'horizontal' ? row : row + i;
+   //       const targetCol = orientation === 'horizontal' ? col + i : col;
+
+   //       if(this.board[targetRow] && this.board[targetRow][targetCol] !== null) {
+   //          console.log('Space occupied already');
+   //          return false;;
+   //       }
+   //    }
    
-         for(let i = 0; i < ship.length; i++) {
-            if(orientation == 'horizontal') {
-               this.board[row][col + i] = ship.name.slice(0, 2);
-            } else if(orientation == 'vertical') {
-               this.board[row + i][col] = ship.name.slice(0, 2);
-            }
-         }  
-         this.ships.push(ship);
-         return true;
+   //       for(let i = 0; i < ship.length; i++) {
+   //          if(orientation == 'horizontal') {
+   //             console.log(this.board[row][col + i]);
+   //             console.log(row);
+   //             console.log(col);
+   //             this.board[row][col + i] = ship.name.slice(0, 2);
+   //          } else if(orientation == 'vertical') {
+   //             this.board[row + i][col] = ship.name.slice(0, 2);
+   //          }
+   //       }  
+   //       this.ships.push(ship);
+   //       return true;
+   // }
+
+   placeShip(coordinates, orientation, shipType) {
+      const ship = this.#getShipType(shipType);
+      if (!ship) return false;
+  
+      const { row, col } = this.#parseCoordinates(coordinates);
+      if (orientation === 'horizontal' && col + ship.length - 1 >= 10) {
+          return false;
       }
+      if (orientation === 'vertical' && row + ship.length - 1 >= 10) {
+          return false;
+      }
+
+      if (row < 0 || row >= this.board.length || col < 0 || col >= this.board[0].length) {
+         console.error("Invalid coordinates provided. Ship placement out of bounds.");
+         return false;
+       }
+  
+      // Check for overlaps with existing ships
+      for (let i = 0; i < ship.length; i++) {
+          const targetRow = orientation === 'horizontal' ? row : row + i;
+          const targetCol = orientation === 'horizontal' ? col + i : col;
+  
+          if (this.board[targetRow][targetCol] !== null) {
+              return false; // Overlaps with another ship
+          }
+      }
+  
+      // Place the ship on the board
+      for (let i = 0; i < ship.length; i++) {
+          const targetRow = orientation === 'horizontal' ? row : row + i;
+          const targetCol = orientation === 'horizontal' ? col + i : col;
+          this.board[targetRow][targetCol] = ship.name.slice(0, 2);
+      }
+  
+      this.ships.push(ship);
+      return true;
+  }
 
    isAllSunk() {
       const allSunk = this.ships.every(ship => ship.isSunk());
