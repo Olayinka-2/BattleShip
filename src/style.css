@@ -208,3 +208,14 @@ thead td {
    background-color: #000;
    color: #52e3a2;
 }
+
+#restartGame {
+   display: none;
+   text-align: center;
+   margin: 0 auto 3rem;
+   padding: 1rem;
+   border: none;
+   border-radius: .5rem;
+   background-color: #52e3a2;
+   color: #000;
+}

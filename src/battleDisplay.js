@@ -73,7 +73,6 @@ function initializeGame(playerPrefix1, playerPrefix2, attachListeners) {
   document.querySelector(".automated-player").style.visibility = 'hidden';
 
   if (computer) colorShip(player1.board.fleetItems, playerPrefix1);
-  // player1.board.printGameBoard();
 
   attachListeners();
   disableAllCells(false);
@@ -165,15 +164,17 @@ function updateTurnStatus(defender, winText) {
     gameOver = true;
     document.querySelector("#playerTurn").innerText = winText;
     disableAllCells();
+
+    // Show the restart button
+    document.getElementById("restartGame").style.display = "block";
   } else {
-    if(currentTurn == "computer") {
+    if (currentTurn == "computer") {
       document.querySelector("#playerTurn").innerText = "Player 1's turn";
       return;
     }
     document.querySelector("#playerTurn").innerText = `${currentTurn === "player1" ? "Player 1" : "Player 2"}'s turn`;
   }
 }
-
 
 function disableAllCells(all = true) {
   if(all) {
@@ -387,3 +388,31 @@ function colors(coord, orientation, length, type, playerPrefix) {
   }
 }
 
+// Add event listener for the restart button
+document.getElementById("restartGame").addEventListener("click", restartGame);
+
+function restartGame() {
+  // Reset game state variables
+  gameOver = false;
+  currentTurn = "player1";
+  player1 = null;
+  player2 = null;
+  computer = null;
+
+  // Clear the game boards
+  document.querySelector('.main-player').innerHTML = '';
+  document.querySelector('.automated-player').innerHTML = '';
+
+  // Reset visibility and text
+  document.querySelector(".automated-player").style.visibility = "hidden";
+  document.querySelector("#startGame").style.display = "block";
+  document.querySelector("#toggle-orientation").style.visibility = "visible";
+  document.querySelector("#playerTurn").innerText = "";
+
+  // Hide the restart button
+  document.getElementById("restartGame").style.display = "none";
+
+  // Show the welcome screen
+  document.querySelector(".welcome-page").style.display = "block";
+  document.querySelector("main").style.display = "none";
+}
