@@ -3,9 +3,12 @@ import './style.css';
 
 let gameOver = false;
 let currentTurn = "player1";  
-let player1, player2, computer, lastPlacedShip, isHorizontal, lastPlacedTableCell;
+let player1, player2, computer, lastPlacedShip, lastPlacedTableCell;
 let orientation;
 const draggableDiv = document.querySelectorAll(".ship");
+const modal = document.getElementById("myModal");
+const span = document.getElementsByClassName("close")[0];
+let userWantsManualPlacement = true;
 
 const shipColors = {
   Carrier: 'Cyan',
@@ -19,22 +22,50 @@ document.getElementById("btn-1").addEventListener("click", () => startGame("PvP"
 document.getElementById("btn-2").addEventListener("click", () => startGame("PvB"));
 document.getElementById("startGame").addEventListener("click", startPlaying);
 
+
+
 function startGame(mode) {
   document.querySelector("main").style.display = "block";
   document.querySelector(".welcome-page").style.display = "none";
+  modal.style.display = "block";
 
+  
+document.getElementById("randomPlacement").addEventListener("click", () => {
+  userWantsManualPlacement = false;
+  modal.style.display = "none";
+  game(mode);
+});
+
+document.getElementById("manualPlacement").addEventListener("click", () => {
+  // Handle manual placement (existing behavior)
+  modal.style.display = "none";
+  game(mode);
+  document.querySelector(".orientations").style.display = "flex";
+  // ... other actions for manual placement
+});
+}
+
+function game(mode) {
   if (mode === "PvP") {
-    player1 = new Player('Player 1', false);
+    if(userWantsManualPlacement == true) {
+      player1 = new Player('Player 1', false);
+    } else {
+      player1 = new Player('Player 1', true);
+    }
     player2 = new Player('Player 2', true);
-    initializeGame("P1", "P2", attachAttackListenersPvP);
-  } else {
-    player1 = new Player('Player 1', false);
+    initializeGame("P1", "P2", attachAttackListenersPvP)
+  } else { 
+    if(userWantsManualPlacement == true) {
+      player1 = new Player('Player 1', false);
+    } else {
+    player1 = new Player('Player 1', true);
+    }
     computer = new Player('Computer', true);
     initializeGame("P1", "P2", attachAttackListenersPvB);
   }
+  modal.style.display = "none";
 }
 
-// Initialize boards and color ships
 function initializeGame(playerPrefix1, playerPrefix2, attachListeners) {
 
   createAndAppendTable('.main-player', playerPrefix1);
@@ -42,7 +73,7 @@ function initializeGame(playerPrefix1, playerPrefix2, attachListeners) {
   document.querySelector(".automated-player").style.visibility = 'hidden';
 
   if (computer) colorShip(player1.board.fleetItems, playerPrefix1);
-  player1.board.printGameBoard();
+  // player1.board.printGameBoard();
 
   attachListeners();
   disableAllCells(false);
@@ -87,6 +118,7 @@ function handlePvPAttack(cell, defender, turn, winText) {
 }
 
 function attachAttackListenersPvB() {
+
   document.querySelectorAll(`td[id^="P2-"]`).forEach(cell => 
     cell.addEventListener('click', () => {
       if (cell.innerText === "H" || cell.innerText === "X") return;

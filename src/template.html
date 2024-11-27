@@ -29,7 +29,8 @@
          <button id = "startGame">Start game</button>
 
          <div class="content-innerContainer">
-            <button id="toggle-orientation">Toggle orientation</button>
+            <div class="orientations">
+               <button id="toggle-orientation">Toggle orientation</button>
                <div id="ship-container">
                   <div class="ship horizontal" id="Carrier" draggable="true" data-length="5" data-orientation = "horizontal">Carrier</div>
                   <div class="ship horizontal" id="BattleShip" draggable="true" data-length="4" data-orientation = "horizontal">BattleShip</div>
@@ -37,6 +38,17 @@
                   <div class="ship horizontal" id="Submarine" draggable="true" data-length="3" data-orientation = "horizontal">Submarine</div>
                   <div class="ship horizontal" id="Destroyer" draggable="true" data-length="2" data-orientation = "horizontal">Destroyer</div>
                </div>
+            </div>
+            
+
+               <div class="modal" id="myModal">
+                  <div class="modal-content">
+                      <div class="modeButton">
+                        <button id="manualPlacement">Manually place ship</button>
+                        <button id="randomPlacement">Randomly place Ship</button>
+                      </div>
+                  </div>
+              </div>
             
             
             <div class="main-player">
